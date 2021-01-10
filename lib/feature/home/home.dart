@@ -20,7 +20,7 @@ class EventCards extends StatelessWidget {
       downloadURL = await firebase_storage.FirebaseStorage.instance
           .ref('event_images/' + documentID + '.png')
           .getDownloadURL();
-    } catch(error) {
+    } catch (error) {
       return Future.error(error);
     }
     return downloadURL;
@@ -41,8 +41,10 @@ class EventCards extends StatelessWidget {
           return StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('events')
-                .where('event_date', isGreaterThan: DateTime.now().add(Duration(days: 1) * -1))
-                .orderBy('event_date', descending: false).snapshots(),
+                .where('event_date',
+                    isGreaterThan: DateTime.now().add(Duration(days: 1) * -1))
+                .orderBy('event_date', descending: false)
+                .snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError)
@@ -55,19 +57,23 @@ class EventCards extends StatelessWidget {
                   return ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
                       if (index == 0) return Container();
-                      return Center(
-                        child: Card(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              ListTile(
-                                title: Text(events[index - 1]["event_title"]),
-                                subtitle: Text(formatTimestamp(events[index - 1]["event_date"])),
-                              ),
-                              FutureBuilder(
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 50.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            ListTile(
+                              title: Text(events[index - 1]["event_title"]),
+                              subtitle: Text(formatTimestamp(
+                                  events[index - 1]["event_date"])),
+                            ),
+                            FutureBuilder(
                                 future: getURL(events[index - 1].reference.id),
-                                builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                                  if (snapshot.connectionState != ConnectionState.done) {
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<String> snapshot) {
+                                  if (snapshot.connectionState !=
+                                      ConnectionState.done) {
                                     return CircularProgressIndicator();
                                   }
                                   if (snapshot.hasError) {
@@ -78,25 +84,23 @@ class EventCards extends StatelessWidget {
                                   } else {
                                     return Text("Loading...");
                                   }
-                                }
-                              ),
-                              ListTile(
-                                subtitle: Text(events[index - 1]["event_details"]),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  TextButton(
-                                    child: const Text('JOIN'),
-                                    onPressed: () {
-                                      /* ... */
-                                    },
-                                  ),
-                                  const SizedBox(width: 8)
-                                ],
-                              ),
-                            ],
-                          ),
+                                }),
+                            ListTile(
+                              subtitle: Text(events[index - 1]["event_details"],
+                                  overflow: TextOverflow.ellipsis, maxLines: 3),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                TextButton(
+                                  child: const Text('JOIN'),
+                                  onPressed: () {
+                                    /* ... */
+                                  },
+                                )
+                              ],
+                            ),
+                          ],
                         ),
                       );
                     },
