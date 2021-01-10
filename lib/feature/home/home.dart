@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import "package:intl/intl.dart";
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import "package:intl/intl.dart";
 
 class EventCards extends StatelessWidget {
   String formatTimestamp(Timestamp timestamp) {
@@ -14,10 +14,10 @@ class EventCards extends StatelessWidget {
     return formatted;
   }
 
-  Future<String> getURL(String documentID) async {
-    String downloadURL = await firebase_storage.FirebaseStorage.instance
-    .ref('event_images/' + documentID + '.png')
-    .getDownloadURL();
+  Future getURL(String documentID) async {
+    final String downloadURL = await firebase_storage.FirebaseStorage.instance
+        .ref('event_images/' + documentID + '.png')
+        .getDownloadURL();
     return downloadURL;
   }
 
@@ -36,8 +36,10 @@ class EventCards extends StatelessWidget {
           return StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('events')
-                .where('event_date', isGreaterThan: DateTime.now().add(Duration(days: 1) * -1))
-                .orderBy('event_date', descending: false).snapshots(),
+                .where('event_date',
+                    isGreaterThan: DateTime.now().add(Duration(days: 1) * -1))
+                .orderBy('event_date', descending: false)
+                .snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError)
@@ -50,7 +52,9 @@ class EventCards extends StatelessWidget {
                   return ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
                       if (index == 0) return Container();
-                      String url = await getURL(events[index - 1].reference.id);
+                      final url =
+                          getURL(events[index - 1].reference.id).toString();
+
                       return Center(
                         child: Card(
                           child: Column(
@@ -58,12 +62,14 @@ class EventCards extends StatelessWidget {
                             children: <Widget>[
                               ListTile(
                                 title: Text(events[index - 1]["event_title"]),
-                                subtitle: Text(formatTimestamp(events[index - 1]["event_date"])),
+                                subtitle: Text(formatTimestamp(
+                                    events[index - 1]["event_date"])),
                               ),
                               Image.network(url),
                               //Image.network(getURL(events[index - 1].reference.id)),
                               ListTile(
-                                subtitle: Text(events[index - 1]["event_details"]),
+                                subtitle:
+                                    Text(events[index - 1]["event_details"]),
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
