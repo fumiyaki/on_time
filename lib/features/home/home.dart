@@ -5,7 +5,7 @@ class SearchBarDemoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        title: 'Search Bar Demo',
+        title: 'OnTime',
         theme: new ThemeData(primarySwatch: Colors.blue),
         home: new SearchBarDemoHome());
   }
@@ -22,7 +22,7 @@ class _SearchBarDemoHomeState extends State<SearchBarDemoHome> {
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
-        title: new Text('Search Bar Demo'),
+        title: new Text('OnTime'),
         actions: [searchBar.getSearchAction(context)]);
   }
 
