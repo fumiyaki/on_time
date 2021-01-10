@@ -136,12 +136,13 @@ class _ChatScreenState extends State<ChatScreen> {
   );
 
   void uploadFile() async {
-    File result = await ImagePicker.pickImage(
+    PickedFile selectedFile = await ImagePicker().getImage(
       source: ImageSource.gallery,
       imageQuality: 80,
       maxHeight: 400,
       maxWidth: 400,
     );
+    File result = File(selectedFile.path);
 
     if (result != null) {
       String id = Uuid().v4().toString();
