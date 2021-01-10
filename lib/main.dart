@@ -1,8 +1,3 @@
-/// Flutter code sample for Card
-
-// This sample shows creation of a [Card] widget that shows album information
-// and two actions.
-
 import 'package:flutter/material.dart';
 import 'feature/home/home.dart';
 
