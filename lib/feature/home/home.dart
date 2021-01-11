@@ -14,14 +14,6 @@ class EventCards extends StatefulWidget {
 }
 
 class _EventCardsState extends State<EventCards> {
-  String formatTimestamp(Timestamp timestamp) {
-    initializeDateFormatting("ja_JP");
-    DateTime dateTime = timestamp.toDate();
-    var formatter = new intl.DateFormat('yyyy/MM/dd(E) HH:mm', "ja_JP");
-    String formatted = formatter.format(dateTime);
-    return formatted;
-  }
-
   Future<String> getURL(String documentID) async {
     final String downloadURL = await firebase_storage.FirebaseStorage.instance
         .ref('event_images/' + documentID + '.png')
@@ -59,17 +51,18 @@ class _EventCardsState extends State<EventCards> {
                 default:
                   List<DocumentSnapshot> events = snapshot.data.docs;
                   if (events.isEmpty) {
-                    return Center(
-                      child: Text('登録されたイベントがありません')
-                    );
+                    return Center(child: Text('登録されたイベントがありません'));
                   }
                   return ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
                       if (index == 0) return Container();
-
+                      DateTime eventDate =
+                          events[index - 1]["event_date"].toDate();
+                      final double numberSize = 20.0;
+                      final double letterSize = 10.0;
                       return Card(
                         margin: const EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 50.0),
+                            vertical: 10.0, horizontal: 30.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
@@ -81,9 +74,8 @@ class _EventCardsState extends State<EventCards> {
                                           events[index - 1]["event_title"],
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 20)),
-                                      subtitle: Text(formatTimestamp(
-                                          events[index - 1]["event_date"])),
+                                              fontSize: 25,
+                                              color: Colors.grey[850])),
                                       trailing: IconButton(
                                           icon: Icon(Icons.share),
                                           onPressed: () {
@@ -91,6 +83,65 @@ class _EventCardsState extends State<EventCards> {
                                                 "Link to open this particular event in OnTime App");
                                           }))),
                             ]),
+                            Row(children: [
+                              SpaceBox.width(50),
+                              Text(
+                                eventDate.year.toString(),
+                                style: TextStyle(
+                                    fontSize: numberSize,
+                                    color: Colors.grey[800]),
+                              ),
+                              Text('年',
+                                  style: TextStyle(
+                                      fontSize: letterSize,
+                                      color: Colors.grey[800]),
+                                  strutStyle: StrutStyle(
+                                    fontSize: numberSize,
+                                  )),
+                              Text(
+                                eventDate.month.toString(),
+                                style: TextStyle(
+                                    fontSize: numberSize,
+                                    color: Colors.grey[800]),
+                              ),
+                              Text('月',
+                                  style: TextStyle(
+                                      fontSize: letterSize,
+                                      color: Colors.grey[800]),
+                                  strutStyle: StrutStyle(
+                                    fontSize: numberSize,
+                                  )),
+                              Text(
+                                eventDate.day.toString(),
+                                style: TextStyle(
+                                    fontSize: numberSize,
+                                    color: Colors.grey[800]),
+                              ),
+                              Text('日',
+                                  style: TextStyle(
+                                      fontSize: letterSize,
+                                      color: Colors.grey[800]),
+                                  strutStyle: StrutStyle(
+                                    fontSize: numberSize,
+                                  )),
+                              SpaceBox.width(10),
+                              Text(
+                                eventDate.hour.toString().padLeft(2, "0") +
+                                    ':' +
+                                    eventDate.minute.toString().padLeft(2, "0"),
+                                style: TextStyle(
+                                    fontSize: numberSize,
+                                    color: Colors.grey[800]),
+                              ),
+                              Text('JST',
+                                  style: TextStyle(
+                                      fontSize: letterSize,
+                                      color: Colors.grey[800]),
+                                  strutStyle: StrutStyle(
+                                    fontSize: numberSize,
+                                  )),
+                            ]),
+                            SpaceBox.height(10),
                             FutureBuilder(
                                 future: getURL(events[index - 1].reference.id),
                                 builder: (BuildContext context,
@@ -104,17 +155,23 @@ class _EventCardsState extends State<EventCards> {
                                   }
                                   if (snapshot.hasData) {
                                     return ConstrainedBox(
-                                      constraints: BoxConstraints(maxHeight: 150),
-                                      child: Image.network(snapshot.data)
-                                    );
+                                        constraints:
+                                            BoxConstraints(maxHeight: 150),
+                                        child: Image.network(snapshot.data));
                                   } else {
                                     return Container();
                                   }
                                 }),
-                              ListTile(
-                                  subtitle: Text(events[index - 1]["event_details"],
-                                  overflow: TextOverflow.ellipsis, maxLines: 3),
-                              ),
+                            SpaceBox.height(10),
+                            Row(children: [
+                              SpaceBox.width(30),
+                              Expanded(child: Text(events[index - 1]["event_details"],
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 3,
+                                  style: TextStyle(color: Colors.grey[700])),),
+                              SpaceBox.width(30)
+                            ]),
+                            SpaceBox.height(5),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
@@ -140,6 +197,7 @@ class _EventCardsState extends State<EventCards> {
                                 SpaceBox.width(10)
                               ],
                             ),
+                            SpaceBox.height(5)
                           ],
                         ),
                       );
