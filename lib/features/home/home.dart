@@ -78,17 +78,11 @@ class _EventCardsState extends State<EventCards> {
                     padding: const EdgeInsets.all(10.0),
                     child: SearchBar<DocumentSnapshot>(
                       onSearch: search,
+                      suggestions: events,
                       minimumChars: 1,
+                      emptyWidget: Center(child: Text('一致するイベントはありません')),
+                      hintText: 'イベント名',
                       onItemFound: (DocumentSnapshot event, int index) {
-/*
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (BuildContext context, int index) {
-*/
-//                      if (index == 0) return Container();
-                      print(event["event_details"]);
-
                         DateTime eventDate =
                         events[index]["event_date"].toDate();
                         final double numberSize = 20.0;
