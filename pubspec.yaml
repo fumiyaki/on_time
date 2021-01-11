@@ -56,6 +56,9 @@ dependencies:
   # for share button
   share: ^0.5.3
 
+  # for search bar
+  flappy_search_bar: ^1.7.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
