@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'feature/home/home.dart';
+import 'feature/schedule/schedule.dart';
 
 void main() => runApp(MyApp());
 
@@ -15,6 +16,9 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(title: const Text(_title)),
         body: EventCards(),
       ),
+      routes: <String, WidgetBuilder> {
+//        SchedulePage.routeName: (context) => SchedulePage()
+      }
     );
   }
 }
