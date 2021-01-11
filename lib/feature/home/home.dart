@@ -179,7 +179,7 @@ class _EventCardsState extends State<EventCards> {
                                     width: 60,
                                     child: RaisedButton(
                                       child: const Text('詳細'),
-                                      color: Colors.blue,
+                                      color: Colors.indigo[300],
                                       textColor: Colors.white,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
