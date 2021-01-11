@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import "package:intl/intl.dart";
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:share/share.dart';
 
 class EventCards extends StatelessWidget {
   String formatTimestamp(Timestamp timestamp) {
@@ -63,11 +64,24 @@ class EventCards extends StatelessWidget {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            ListTile(
-                              title: Text(events[index - 1]["event_title"]),
-                              subtitle: Text(formatTimestamp(
-                                  events[index - 1]["event_date"])),
-                            ),
+                            Row(children: [
+                              SpaceBox.width(30),
+                              Expanded(
+                                  child: ListTile(
+                                      title: Text(
+                                          events[index - 1]["event_title"],
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20)),
+                                      subtitle: Text(formatTimestamp(
+                                          events[index - 1]["event_date"])),
+                                      trailing: IconButton(
+                                          icon: Icon(Icons.share),
+                                          onPressed: () {
+                                            Share.share(
+                                                "Link to open this particular event in OnTime App");
+                                          }))),
+                            ]),
                             FutureBuilder(
                                 future: getURL(events[index - 1].reference.id),
                                 builder: (BuildContext context,
@@ -116,4 +130,12 @@ class EventCards extends StatelessWidget {
       },
     );
   }
+}
+
+class SpaceBox extends SizedBox {
+  SpaceBox({double width = 8, double height = 8})
+      : super(width: width, height: height);
+
+  SpaceBox.width([double value = 8]) : super(width: value);
+  SpaceBox.height([double value = 8]) : super(height: value);
 }
