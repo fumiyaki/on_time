@@ -3,17 +3,17 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:share/share.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
+import 'package:flappy_search_bar/search_bar_style.dart';
 import "../schedule/schedule.dart";
+//import 'package:flutter_search_bar/flutter_search_bar.dart';
 
 class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-//        theme: new ThemeData(primarySwatch: Colors.blue),
         body: SafeArea(
-            child: EventCards()
+            child: EventCards(),
         )
     );
   }
@@ -63,7 +63,7 @@ class _EventCardsState extends State<EventCards> {
               switch (snapshot.connectionState) {
               // Firestoreに問い合わせ中の表示
                 case ConnectionState.waiting:
-                  return CircularProgressIndicator();
+                  return Center(child: CircularProgressIndicator());
 
                 default:
                   events = snapshot.data.docs;
@@ -75,13 +75,27 @@ class _EventCardsState extends State<EventCards> {
 
                   // 検索窓
                   return Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.all(30),
                     child: SearchBar<DocumentSnapshot>(
                       onSearch: search,
                       suggestions: events,
+                      searchBarStyle: SearchBarStyle(
+                        backgroundColor: Colors.white,
+/*                        padding: EdgeInsets.symmetric(
+                          horizontal: 120.0
+                        ),
+
+ */
+                        borderRadius: BorderRadius.circular(10)
+                      ),
                       minimumChars: 1,
+                      cancellationWidget: Icon(Icons.cancel_outlined),
+//                      cancellationWidget: Text('キャンセル'),
                       emptyWidget: Center(child: Text('一致するイベントはありません')),
                       hintText: 'イベント名',
+                      hintStyle: TextStyle(
+                        fontSize: 20
+                      ),
                       onItemFound: (DocumentSnapshot event, int index) {
                         DateTime eventDate =
                         events[index]["event_date"].toDate();
@@ -91,7 +105,7 @@ class _EventCardsState extends State<EventCards> {
                         // 1イベント分のCard
                         return Card(
                           margin: const EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 30.0),
+                              vertical: 10.0, horizontal: 0),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
@@ -260,7 +274,7 @@ class _EventCardsState extends State<EventCards> {
           );
         }
         // Firebase初期化中の表示
-        return CircularProgressIndicator();
+        return Center(child: CircularProgressIndicator());
       },
     );
   }
