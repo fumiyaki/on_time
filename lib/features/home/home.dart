@@ -5,20 +5,31 @@ import 'package:share/share.dart';
 import 'package:flutter/material.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
+import "../auth/auth.dart";
 import "../schedule/schedule.dart";
-//import 'package:flutter_search_bar/flutter_search_bar.dart';
 
 class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
         body: SafeArea(
-            child: EventCards(),
-        )
-    );
+          child: EventCards(),
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+/*
+            // スケジュール画面への遷移
+            Navigator.pushNamed(context, AuthPage().routeName,
+
+ */
+          },
+          icon: new Icon(Icons.add),
+          label: Text("ログイン"),
+        ),
+        floatingActionButtonLocation:
+            FloatingActionButtonLocation.centerDocked);
   }
 }
-
 
 class EventCards extends StatefulWidget {
   @override
@@ -26,7 +37,6 @@ class EventCards extends StatefulWidget {
 }
 
 class _EventCardsState extends State<EventCards> {
-
   List<DocumentSnapshot> events;
 
   @override
@@ -46,22 +56,21 @@ class _EventCardsState extends State<EventCards> {
             stream: FirebaseFirestore.instance
                 .collection('events')
 
-            // 過去（1日以上前）のイベントは表示しない
+                // 過去（1日以上前）のイベントは表示しない
                 .where('event_date',
-                isGreaterThan: DateTime.now().add(Duration(days: 1) * -1))
+                    isGreaterThan: DateTime.now().add(Duration(days: 1) * -1))
 //                isGreaterThan: DateTime.now().add(Duration(days: 10)))
                 .orderBy('event_date', descending: false)
                 .snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-
               // Firestoreからデータ取得する際のエラー
               if (snapshot.hasError) {
                 return new Text('データを取得できませんでした');
               }
 
               switch (snapshot.connectionState) {
-              // Firestoreに問い合わせ中の表示
+                // Firestoreに問い合わせ中の表示
                 case ConnectionState.waiting:
                   return Center(child: CircularProgressIndicator());
 
@@ -80,25 +89,22 @@ class _EventCardsState extends State<EventCards> {
                       onSearch: search,
                       suggestions: events,
                       searchBarStyle: SearchBarStyle(
-                        backgroundColor: Colors.white,
+                          backgroundColor: Colors.white,
 /*                        padding: EdgeInsets.symmetric(
                           horizontal: 120.0
                         ),
 
  */
-                        borderRadius: BorderRadius.circular(10)
-                      ),
+                          borderRadius: BorderRadius.circular(10)),
                       minimumChars: 1,
                       cancellationWidget: Icon(Icons.cancel_outlined),
 //                      cancellationWidget: Text('キャンセル'),
                       emptyWidget: Center(child: Text('一致するイベントはありません')),
                       hintText: 'イベント名',
-                      hintStyle: TextStyle(
-                        fontSize: 20
-                      ),
+                      hintStyle: TextStyle(fontSize: 20),
                       onItemFound: (DocumentSnapshot event, int index) {
                         DateTime eventDate =
-                        events[index]["event_date"].toDate();
+                            events[index]["event_date"].toDate();
                         final double numberSize = 20.0;
                         final double letterSize = 10.0;
 
@@ -178,8 +184,9 @@ class _EventCardsState extends State<EventCards> {
                                 Text(
                                   eventDate.hour.toString().padLeft(2, "0") +
                                       ':' +
-                                      eventDate.minute.toString().padLeft(
-                                          2, "0"),
+                                      eventDate.minute
+                                          .toString()
+                                          .padLeft(2, "0"),
                                   style: TextStyle(
                                       fontSize: numberSize,
                                       color: Colors.grey[800]),
@@ -196,8 +203,7 @@ class _EventCardsState extends State<EventCards> {
 
                               // イベント画像
                               FutureBuilder(
-                                  future: getURL(
-                                      events[index].reference.id),
+                                  future: getURL(events[index].reference.id),
                                   builder: (BuildContext context,
                                       AsyncSnapshot<String> snapshot) {
                                     // 画像URL取得中の表示
@@ -209,7 +215,7 @@ class _EventCardsState extends State<EventCards> {
                                     if (snapshot.hasData) {
                                       return ConstrainedBox(
                                           constraints:
-                                          BoxConstraints(maxHeight: 150),
+                                              BoxConstraints(maxHeight: 150),
                                           child: Image.network(snapshot.data));
                                     } else {
                                       // 画像取得エラー
@@ -222,12 +228,11 @@ class _EventCardsState extends State<EventCards> {
                               Row(children: [
                                 SpaceBox.width(30),
                                 Expanded(
-                                  child: Text(
-                                      events[index]["event_details"],
+                                  child: Text(events[index]["event_details"],
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 3, // 3行以上の説明文は省略表示
-                                      style: TextStyle(
-                                          color: Colors.grey[700])),
+                                      style:
+                                          TextStyle(color: Colors.grey[700])),
                                 ),
                                 SpaceBox.width(30)
                               ]),
@@ -241,11 +246,12 @@ class _EventCardsState extends State<EventCards> {
                                       width: 60,
                                       child: RaisedButton(
                                         child: const Text('詳細'),
-                                        color: Colors.indigo[300],
+//                                        color: Colors.indigo[300],
+                                        color: Colors.blue,
                                         textColor: Colors.white,
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
-                                            BorderRadius.circular(3)),
+                                                BorderRadius.circular(3)),
                                         onPressed: () {
                                           /*
                                         // スケジュール画面への遷移
@@ -268,7 +274,8 @@ class _EventCardsState extends State<EventCards> {
                         );
                       },
 //                    itemCount: events.length + 1,
-                    ),);
+                    ),
+                  );
               }
             },
           );
@@ -279,14 +286,12 @@ class _EventCardsState extends State<EventCards> {
     );
   }
 
-
   // 検索処理
   Future<List<DocumentSnapshot>> search(String search) async {
-    return events.where(
-            (event) => event["event_title"].contains(search)
-    ).toList();
+    return events
+        .where((event) => event["event_title"].contains(search))
+        .toList();
   }
-
 
   // Cloud Storage URL取得
   Future<String> getURL(String documentID) async {
@@ -296,7 +301,6 @@ class _EventCardsState extends State<EventCards> {
     return downloadURL;
   }
 }
-
 
 // マージン記述簡略化用Widget
 class SpaceBox extends SizedBox {

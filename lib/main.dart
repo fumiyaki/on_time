@@ -17,7 +17,10 @@ class MyApp extends StatelessWidget {
       home: Home(),
 //    home: SearchBarDemoHome(),
       routes: <String, WidgetBuilder> {
-//        SchedulePage.routeName: (context) => SchedulePage()
+/*
+        AuthPage.routeName: (context) => AuthPage(),
+        SchedulePage.routeName: (context) => SchedulePage(),
+*/
       }
     );
   }
