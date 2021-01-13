@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
         title: 'Search Bar Demo',
         theme: new ThemeData(primarySwatch: Colors.blue),
         home: new Scaffold(
+//            drawerEdgeDragWidth: 0,
             drawer: MyDrawer(),
           body: Center(child: Text('this is body'))
         )
