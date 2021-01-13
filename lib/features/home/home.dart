@@ -7,6 +7,9 @@ import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
 import "../auth/auth.dart";
 import "../schedule/schedule.dart";
+import "../../entity/event.dart";
+import "../../common/space_box.dart";
+import "../../common/event_card.dart";
 
 class Home extends StatelessWidget {
   @override
@@ -103,6 +106,19 @@ class _EventCardsState extends State<EventCards> {
                       hintText: 'イベント名',
                       hintStyle: TextStyle(fontSize: 20),
                       onItemFound: (DocumentSnapshot event, int index) {
+
+                        Event event = new Event(
+                          events[index].reference.id,
+                          events[index]['event_title'],
+                          events[index]['event_date'],
+                          events[index]['evnent_details']
+                        );
+
+                        return EventCard(
+                          event: event,
+                          displayAll: true
+                        );
+/*
                         DateTime eventDate =
                             events[index]["event_date"].toDate();
                         final double numberSize = 20.0;
@@ -272,6 +288,7 @@ class _EventCardsState extends State<EventCards> {
                             ],
                           ),
                         );
+ */
                       },
 //                    itemCount: events.length + 1,
                     ),
@@ -302,6 +319,7 @@ class _EventCardsState extends State<EventCards> {
   }
 }
 
+/*
 // マージン記述簡略化用Widget
 class SpaceBox extends SizedBox {
   SpaceBox({double width = 8, double height = 8})
@@ -310,6 +328,8 @@ class SpaceBox extends SizedBox {
   SpaceBox.width([double value = 8]) : super(width: value);
   SpaceBox.height([double value = 8]) : super(height: value);
 }
+
+ */
 
 /*
 class SearchBarDemoApp extends StatelessWidget {
