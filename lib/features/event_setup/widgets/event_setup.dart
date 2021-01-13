@@ -94,10 +94,6 @@ class MyCustomFormState extends State<MyCustomForm> {
       );
     }
 
-/*  @override
-  Widget build(BuildContext context) {
-  }*/
-
     // Build a Form widget using the _formKey created above.
     return Scaffold(
       appBar: AppBar(
@@ -169,12 +165,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: ElevatedButton(
-/*                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          Scaffold.of(context)
-                              .showSnackBar(SnackBar(content: Text('Processing Data')));
-                        }
-                      },*/
                       onPressed: uploadImageToFirebase,
                       child: Text('image upload'),
                     ),
@@ -182,12 +172,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: ElevatedButton(
-/*                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          Scaffold.of(context)
-                              .showSnackBar(SnackBar(content: Text('Processing Data')));
-                        }
-                      },*/
                       onPressed: addEvents,
                       child: Text('Submit'),
                     ),
@@ -197,116 +181,6 @@ class MyCustomFormState extends State<MyCustomForm> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class UploadingImageToFirebaseStorage extends StatefulWidget {
-  @override
-  _UploadingImageToFirebaseStorageState createState() =>
-      _UploadingImageToFirebaseStorageState();
-}
-
-class _UploadingImageToFirebaseStorageState
-    extends State<UploadingImageToFirebaseStorage> {
-  File _imageFile;
-
-  ///NOTE: Only supported on Android & iOS
-  ///Needs image_picker plugin {https://pub.dev/packages/image_picker}
-  final picker = ImagePicker();
-
-  Future pickImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
-
-    setState(() {
-      _imageFile = File(pickedFile.path);
-    });
-  }
-
-  Future uploadImageToFirebase(BuildContext context) async {
-    String fileName = basename(_imageFile.path);
-    Reference firebaseStorageRef = FirebaseStorage.instance.ref().child('uploads/$fileName');
-    UploadTask uploadTask = firebaseStorageRef.putFile(_imageFile);
-    TaskSnapshot taskSnapshot = await uploadTask;
-    //uploadTask.onCompleteをuploadTaskに変更
-    taskSnapshot.ref.getDownloadURL().then(
-          (value) => print("Done: $value"),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Container(
-            margin: const EdgeInsets.only(top: 80),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: Text(
-                      "Uploading Image to Firebase Storage",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontStyle: FontStyle.italic),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20.0),
-                Expanded(
-                  child: Stack(
-                    children: <Widget>[
-                      Container(
-                        height: double.infinity,
-                        margin: const EdgeInsets.only(
-                            left: 30.0, right: 30.0, top: 10.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(30.0),
-                          child: _imageFile != null
-                              ? Image.file(_imageFile)
-                              : FlatButton(
-                            child: Icon(
-                              Icons.add_a_photo,
-                              size: 50,
-                            ),
-                            onPressed: pickImage,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                uploadImageButton(context),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget uploadImageButton(BuildContext context) {
-    return Container(
-      child: Stack(
-        children: <Widget>[
-          Container(
-            padding:
-            const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
-            margin: const EdgeInsets.only(
-                top: 30, left: 20.0, right: 20.0, bottom: 20.0),
-            child: FlatButton(
-              onPressed: () => uploadImageToFirebase(context),
-              child: Text(
-                "Upload Image",
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
