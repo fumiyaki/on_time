@@ -1,10 +1,16 @@
+import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:flutter/material.dart';
+import 'package: flutter/material.dart';
 import 'features/home/home.dart';
+import 'features/auth/auth.dart';
 import 'features/schedule/schedule.dart';
+import 'features/chat/chat.dart';
 
-
-void main() => runApp(MyApp());
-//void main() => runApp(SearchBarDemoApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await firebase_core.Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 /// This is the main application widget.
 class MyApp extends StatelessWidget {
