@@ -165,14 +165,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: ElevatedButton(
-                      onPressed: uploadImageToFirebase,
-                      child: Text('image upload'),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: ElevatedButton(
-                      onPressed: addEvents,
+                      onPressed: (){addEvents();uploadImageToFirebase();},
                       child: Text('Submit'),
                     ),
                   ),
