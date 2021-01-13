@@ -11,31 +11,79 @@ import "../../entity/event.dart";
 import "../../common/space_box.dart";
 import "../../common/event_card.dart";
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  @override
+  Widget build(BuildContext context) {
+    bool isConnecting = true;
+    bool hasData = false;
+
+    return FutureBuilder(
+        future: _getUserId(),
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            isConnecting = false;
+            if (snapshot.hasData) {
+              hasData = true;
+            }
+          }
+          return new MyScaffold(isConnecting, hasData);
+        }
+    )
+  }
+  Future<String> _getUserId() async {
+    final Future<Database> database =
+    openDatabase(join(await getDatabasesPath(), 'onTime.db'));
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('users');
+    return maps[0]['userId'];
+  }
+}
+
+class MyScaffold extends StatefulWidget {
+  bool isConnecting;
+  bool hasData;
+  MyScaffold({this.isConnecting, this.hasData});
+  @override
+  _MyScaffoldState createState() => _MyScaffoldState(isConnecting: isConnecting, hasData: hasData});
+}
+
+class _MyScaffoldState extends State<MyScaffold> {
+  bool isConnecting;
+  bool hasData;
+  _MyScaffoldState({this.isConnecting, this.hasData}));
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
         body: SafeArea(
-          child: EventCards(),
+          child: this.isConnecting ? CircularProgressIndicator() : EventCards(),
         ),
-        floatingActionButton: FloatingActionButton.extended(
+        floatingActionButton:
+        hasData ? FloatingActionButton.extended(
           onPressed: () {
-/*
-            // スケジュール画面への遷移
-            Navigator.pushNamed(context, AuthPage().routeName,
-
- */
+//              Navigator.pushNamed(context, ChatPage().routeName);
           },
-          icon: new Icon(Icons.add),
-          label: Text("ログイン"),
-        ),
-        floatingActionButtonLocation:
-            FloatingActionButtonLocation.centerDocked,
-        drawerEdgeDragWidth: 0,
-        drawer: MyDrawer()
+          icon: new Icon(Icons.chat),
+          drawerEdgeDragWidth: 0,
+          drawer: MyDrawer()
+    ) : FloatingActionButton.extended(
+    onPressed: () {
+//            Navigator.pushNamed(context, AuthPage().routeName,
+    },
+    label: Text('ログイン'),
+    drawerEdgeDragWidth: 0,
+    drawer: MyDrawer()
+    );
     );
   }
 }
+
+
 
 class EventCards extends StatefulWidget {
   @override

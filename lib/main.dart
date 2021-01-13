@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
 /*
         AuthPage.routeName: (context) => AuthPage(),
         SchedulePage.routeName: (context) => SchedulePage(),
-        MyHomePage.routeName: (context) => MyHomePage() // Chat
+        ChatPage.routeName: (context) => MyHomePage()
 */
       }
     );
