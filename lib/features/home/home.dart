@@ -30,7 +30,10 @@ class Home extends StatelessWidget {
           label: Text("ログイン"),
         ),
         floatingActionButtonLocation:
-            FloatingActionButtonLocation.centerDocked);
+            FloatingActionButtonLocation.centerDocked,
+        drawerEdgeDragWidth: 0,
+        drawer: MyDrawer()
+    );
   }
 }
 
