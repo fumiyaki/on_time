@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
+import 'package:ontime/features/chat/chat.dart';
 
 class SearchBarDemoApp extends StatelessWidget {
   @override
@@ -52,6 +53,18 @@ class _SearchBarDemoHomeState extends State<SearchBarDemoHome> {
       key: _scaffoldKey,
       body: new Center(
           child: new Text("Don't look at me! Press the search button!")),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.chat_bubble),
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) {
+                return MyHomePage();
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }
