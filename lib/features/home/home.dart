@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:share/share.dart';
 import 'package:flutter/material.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import "../auth/auth.dart";
 import "../schedule/schedule.dart";
 import "../../entity/event.dart";
-import "../../common/space_box.dart";
 import "../../common/event_card.dart";
+import "../../common/drawer.dart";
 
 class Home extends StatefulWidget {
   @override
@@ -20,7 +21,8 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     bool isConnecting = true;
-    bool hasData = false;
+//    bool hasData = false;
+    bool hasData = true;
 
     return FutureBuilder(
         future: _getUserId(),
@@ -31,9 +33,10 @@ class _HomeState extends State<Home> {
               hasData = true;
             }
           }
-          return new MyScaffold(isConnecting, hasData);
+          if (hasData) print('yes');
+          return new MyScaffold(isConnecting: isConnecting, hasData: hasData);
         }
-    )
+    );
   }
   Future<String> _getUserId() async {
     final Future<Database> database =
@@ -45,44 +48,46 @@ class _HomeState extends State<Home> {
 }
 
 class MyScaffold extends StatefulWidget {
-  bool isConnecting;
-  bool hasData;
+  final bool isConnecting;
+  final bool hasData;
   MyScaffold({this.isConnecting, this.hasData});
   @override
-  _MyScaffoldState createState() => _MyScaffoldState(isConnecting: isConnecting, hasData: hasData});
+  _MyScaffoldState createState() => _MyScaffoldState(isConnecting: isConnecting, hasData: hasData);
 }
 
 class _MyScaffoldState extends State<MyScaffold> {
   bool isConnecting;
   bool hasData;
-  _MyScaffoldState({this.isConnecting, this.hasData}));
+  _MyScaffoldState({this.isConnecting, this.hasData});
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (hasData) print('has');
     return new Scaffold(
         body: SafeArea(
-          child: this.isConnecting ? CircularProgressIndicator() : EventCards(),
+          child: EventCards(),
         ),
         floatingActionButton:
-        hasData ? FloatingActionButton.extended(
+        hasData ? FloatingActionButton(
           onPressed: () {
 //              Navigator.pushNamed(context, ChatPage().routeName);
           },
-          icon: new Icon(Icons.chat),
-          drawerEdgeDragWidth: 0,
-          drawer: MyDrawer()
-    ) : FloatingActionButton.extended(
-    onPressed: () {
+          child: new Icon(Icons.chat))
+       : Container(
+          width: 0.7 * screenWidth,
+            child: FloatingActionButton.extended(
+          onPressed: () {
 //            Navigator.pushNamed(context, AuthPage().routeName,
-    },
-    label: Text('ログイン'),
-    drawerEdgeDragWidth: 0,
-    drawer: MyDrawer()
-    );
+          },
+          label: Text('ログイン'))),
+        floatingActionButtonLocation:
+          hasData ? null : FloatingActionButtonLocation.centerDocked,
+//        drawerEdgeDragWidth: 0,
+        drawer: MyDrawer()
     );
   }
 }
-
 
 
 class EventCards extends StatefulWidget {
@@ -119,7 +124,7 @@ class _EventCardsState extends State<EventCards> {
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               // Firestoreからデータ取得する際のエラー
-              if (snapshot.hasError) {
+              if (snapshot.hasError || !snapshot.hasData) {
                 return new Text('データを取得できませんでした');
               }
 
@@ -158,11 +163,12 @@ class _EventCardsState extends State<EventCards> {
                       hintStyle: TextStyle(fontSize: 20),
                       onItemFound: (DocumentSnapshot event, int index) {
 
+                        // 検索結果
                         Event event = new Event(
                           events[index].reference.id,
-                          events[index]['event_title'],
-                          events[index]['event_date'],
-                          events[index]['evnent_details']
+                          events[index].data()['event_title'],
+                          events[index].data()['event_date'],
+                          events[index].data()['event_details']
                         );
 
                         return EventCard(

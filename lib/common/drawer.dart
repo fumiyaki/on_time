@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import '../entity/user.dart';
 import '../entity/editable_event.dart';
 import '../entity/event.dart';
 import '../common/event_card.dart';
@@ -29,7 +26,7 @@ class _MyDrawerState extends State<MyDrawer> {
                   return CircularProgressIndicator();
                 }
 
-                return CreateEventCard(snapshot.hasData);
+                return createEventCard(snapshot.hasData);
               }),
           SpaceBox.height(50),
           Text('共同編集中のイベント一覧',
@@ -38,7 +35,7 @@ class _MyDrawerState extends State<MyDrawer> {
         ]));
   }
 
-  CreateEventCard(bool hasData) {
+  Card createEventCard(bool hasData) {
     return Card(
         margin: EdgeInsets.symmetric(horizontal: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
