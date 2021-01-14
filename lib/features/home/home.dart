@@ -21,8 +21,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     bool isConnecting = true;
-//    bool hasData = false;
-    bool hasData = true;
+    bool hasData = false;
 
     return FutureBuilder(
         future: _getUserId(),
@@ -33,8 +32,9 @@ class _HomeState extends State<Home> {
               hasData = true;
             }
           }
-          if (hasData) print('yes');
-          return new MyScaffold(isConnecting: isConnecting, hasData: hasData);
+          isConnecting = false;
+          hasData = true;
+          return new MyScaffold(isConnecting, hasData);
         }
     );
   }
@@ -50,28 +50,38 @@ class _HomeState extends State<Home> {
 class MyScaffold extends StatefulWidget {
   final bool isConnecting;
   final bool hasData;
-  MyScaffold({this.isConnecting, this.hasData});
+  MyScaffold(this.isConnecting, this.hasData);
+
   @override
-  _MyScaffoldState createState() => _MyScaffoldState(isConnecting: isConnecting, hasData: hasData);
+  _MyScaffoldState createState() {
+    if (isConnecting) {
+      print('isConnecting in StfulWid');
+    } else {
+      print('not Connecting in StfulWid');
+    }
+    if (hasData) {
+      print('hasData in StfulWid');
+    } else {
+      print('no Data in StfulWid');
+    }
+    return _MyScaffoldState();
+  }
 }
 
 class _MyScaffoldState extends State<MyScaffold> {
-  bool isConnecting;
-  bool hasData;
-  _MyScaffoldState({this.isConnecting, this.hasData});
-
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    if (hasData) print('has');
+    if (widget.isConnecting) print('isConnecting in State');
+    if (widget.hasData) print('hasData in State');
     return new Scaffold(
         body: SafeArea(
           child: EventCards(),
         ),
         floatingActionButton:
-        hasData ? FloatingActionButton(
+        widget.hasData ? FloatingActionButton(
           onPressed: () {
-//              Navigator.pushNamed(context, ChatPage().routeName);
+            Navigator.pushNamed(context, '/chat');
           },
           child: new Icon(Icons.chat))
        : Container(
@@ -82,7 +92,7 @@ class _MyScaffoldState extends State<MyScaffold> {
           },
           label: Text('ログイン'))),
         floatingActionButtonLocation:
-          hasData ? null : FloatingActionButtonLocation.centerDocked,
+          widget.hasData ? null : FloatingActionButtonLocation.centerDocked,
 //        drawerEdgeDragWidth: 0,
         drawer: MyDrawer()
     );
