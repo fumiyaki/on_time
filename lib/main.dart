@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:flutter/material.dart';
+import 'features/event_setup/widgets/event_setup.dart';
 import 'features/home/home.dart';
 import 'features/auth/auth.dart';
 import 'features/schedule/schedule.dart';
@@ -27,7 +28,9 @@ class MyApp extends StatelessWidget {
         '/auth': (context) => AuthPage(),
         '/schedule': (context) => SchedulePage(),
 */
-        '/chat': (context) => MyHomePage()
+        '/chat': (context) => MyHomePage(),
+
+        '/event_setup': (content) => EventSetup()
       }
     );
   }
