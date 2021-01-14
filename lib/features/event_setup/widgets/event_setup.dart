@@ -9,7 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
 
-class MyApp extends StatelessWidget {
+class EventSetup extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -38,10 +38,11 @@ class MyCustomForm extends StatefulWidget {
 // This class holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
-  final EventDate = TextEditingController();
+
   final EventTitle = TextEditingController();
   final EventDetail = TextEditingController();
 
+  DateTime EventDate = DateTime.now();
   File _imageFile;
 
   ///NOTE: Only supported on Android & iOS
@@ -59,7 +60,6 @@ class MyCustomFormState extends State<MyCustomForm> {
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
-    EventDate.dispose();
     EventTitle.dispose();
     EventDetail.dispose();
     super.dispose();
@@ -74,7 +74,7 @@ class MyCustomFormState extends State<MyCustomForm> {
       // Call the user's CollectionReference to add a new user
       return addevents
           .add({
-        'event_date': EventDate.text,
+        'event_date': EventDate.toString(),
         'event_title': EventTitle.text,
         'event_detail': EventDetail.text
       })
@@ -94,6 +94,19 @@ class MyCustomFormState extends State<MyCustomForm> {
       );
     }
 
+    Future<void> _selectDate(BuildContext context) async {
+      final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: EventDate, // Refer step 1
+        firstDate: DateTime(2021),
+        lastDate: DateTime(2050),
+      );
+      if (picked != null && picked != EventDate)
+        setState(() {
+          EventDate = picked;
+        });
+    }
+
     // Build a Form widget using the _formKey created above.
     return Scaffold(
       appBar: AppBar(
@@ -108,17 +121,19 @@ class MyCustomFormState extends State<MyCustomForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  TextFormField(
-                    controller: EventDate,
-                    decoration: const InputDecoration(
-                      labelText: 'イベントの日付/開始時間',
+                  Text(
+                    "${EventDate.toLocal()}".split(' ')[0],
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 16.0,),
+                  RaisedButton(
+                    onPressed: () => _selectDate(context), // Refer step 3
+                    child: Text(
+                      'イベントの日付を選択',
+                      style:
+                      TextStyle(color: Colors.white),
                     ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter some text';
-                      }
-                      return null;
-                    },
+                    color: Colors.blue,
                   ),
                   SizedBox(height: 16),
                   TextFormField(
@@ -164,9 +179,14 @@ class MyCustomFormState extends State<MyCustomForm> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: ElevatedButton(
+                    child: RaisedButton(
                       onPressed: (){addEvents();uploadImageToFirebase();},
-                      child: Text('Submit'),
+                      child: Text(
+                        '登録',
+                        style:
+                        TextStyle(color: Colors.white),
+                      ),
+                      color: Colors.blue,
                     ),
                   ),
                 ],
