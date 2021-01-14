@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
+import "../../common/app_bar.dart";
 import "../../common/drawer.dart";
 
 class MyHomePage extends StatefulWidget {
@@ -20,16 +21,15 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _editingController = TextEditingController();
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Dash Chat"),
-      ),
-      body: Padding(
+      appBar: MyAppBar(_key),
+      body: Scaffold(body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Form(
           key: _formKey,
@@ -73,6 +73,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
+      ),
+        drawerEdgeDragWidth: 0,
+        drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer()),
+        key: _key,
       ),
         //        drawerEdgeDragWidth: 0,
         drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer())

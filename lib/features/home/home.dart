@@ -9,6 +9,7 @@ import 'package:sqflite/sqflite.dart';
 import "../auth/auth.dart";
 import "../schedule/schedule.dart";
 import "../../entity/event.dart";
+import "../../common/app_bar.dart";
 import "../../common/event_card.dart";
 import "../../common/drawer.dart";
 
@@ -35,12 +36,12 @@ class _HomeState extends State<Home> {
           isConnecting = false;
           hasData = true;
           return new MyScaffold(isConnecting, hasData);
-        }
-    );
+        });
   }
+
   Future<String> _getUserId() async {
     final Future<Database> database =
-    openDatabase(join(await getDatabasesPath(), 'onTime.db'));
+        openDatabase(join(await getDatabasesPath(), 'onTime.db'));
     final Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query('users');
     return maps[0]['userId'];
@@ -54,54 +55,43 @@ class MyScaffold extends StatefulWidget {
 
   @override
   _MyScaffoldState createState() {
-/*
-    if (isConnecting) {
-      print('isConnecting in StfulWid');
-    } else {
-      print('not Connecting in StfulWid');
-    }
-    if (hasData) {
-      print('hasData in StfulWid');
-    } else {
-      print('no Data in StfulWid');
-    }
-
- */
     return _MyScaffoldState();
   }
 }
 
 class _MyScaffoldState extends State<MyScaffold> {
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-//    if (widget.isConnecting) print('isConnecting in State');
-//    if (widget.hasData) print('hasData in State');
     return new Scaffold(
-        body: SafeArea(
-          child: EventCards(),
-        ),
-        floatingActionButton:
-        widget.hasData ? FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/chat');
-          },
-          child: new Icon(Icons.chat))
-       : Container(
-          width: 0.7 * screenWidth,
-            child: FloatingActionButton.extended(
-          onPressed: () {
+        appBar: MyAppBar(_key),
+        body: Scaffold(
+          body: SafeArea(
+            child: EventCards(),
+          ),
+          floatingActionButton: widget.hasData
+              ? FloatingActionButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/chat');
+                  },
+                  child: new Icon(Icons.chat))
+              : Container(
+                  width: 0.7 * screenWidth,
+                  child: FloatingActionButton.extended(
+                      onPressed: () {
 //            Navigator.pushNamed(context, AuthPage().routeName,
-          },
-          label: Text('ログイン'))),
-        floatingActionButtonLocation:
-          widget.hasData ? null : FloatingActionButtonLocation.centerDocked,
-//        drawerEdgeDragWidth: 0,
-        drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer())
-    );
+                      },
+                      label: Text('ログイン'))),
+          floatingActionButtonLocation:
+              widget.hasData ? null : FloatingActionButtonLocation.centerDocked,
+          drawerEdgeDragWidth: 0,
+          drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer()),
+          key: _key,
+        ));
   }
 }
-
 
 class EventCards extends StatefulWidget {
   @override
@@ -156,7 +146,7 @@ class _EventCardsState extends State<EventCards> {
 
                   // 検索窓
                   return Padding(
-                    padding: const EdgeInsets.all(30),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
                     child: SearchBar<DocumentSnapshot>(
                       onSearch: search,
                       suggestions: events,
@@ -175,19 +165,14 @@ class _EventCardsState extends State<EventCards> {
                       hintText: 'イベント名',
                       hintStyle: TextStyle(fontSize: 20),
                       onItemFound: (DocumentSnapshot event, int index) {
-
                         // 検索結果
                         Event event = new Event(
-                          events[index].reference.id,
-                          events[index].data()['event_title'],
-                          events[index].data()['event_date'],
-                          events[index].data()['event_details']
-                        );
+                            events[index].reference.id,
+                            events[index].data()['event_title'],
+                            events[index].data()['event_date'],
+                            events[index].data()['event_details']);
 
-                        return EventCard(
-                          event: event,
-                          displayAll: true
-                        );
+                        return EventCard(event: event, displayAll: true);
 /*
                         DateTime eventDate =
                             events[index]["event_date"].toDate();
