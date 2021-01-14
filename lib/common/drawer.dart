@@ -104,7 +104,6 @@ class _EditableEventsState extends State<EditableEvents> {
             return CircularProgressIndicator();
           }
           if (snapshot.hasData) {
-            print('hasData');
             editableEvents = snapshot.data;
             return Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
@@ -123,7 +122,6 @@ class _EditableEventsState extends State<EditableEvents> {
                   physics: NeverScrollableScrollPhysics(),)
             );
           } else {
-            print('no data');
             return Container();
           }
         });
@@ -131,19 +129,19 @@ class _EditableEventsState extends State<EditableEvents> {
 
   Future<List<EditableEvent>> _getEditableEvents() async {
     List<EditableEvent> eventList = new List<EditableEvent>();
+
+    /// テスト用の暫定コード　ここから
     EditableEvent event = new EditableEvent(
         id: 'abcde', title: 'タイトル', date: Timestamp.fromDate(DateTime.now())
     );
     eventList.add(event);
     return eventList;
-
+    /// ここまで
+/*
     final Future<Database> database =
         openDatabase(join(await getDatabasesPath(), 'onTime.db'));
     final Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query('editableEvents');
-
-
-    /*
     return List.generate(maps.length, (i) {
       return EditableEvent(
         id: maps[i]['id'],

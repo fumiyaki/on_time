@@ -23,6 +23,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Dash Chat"),
@@ -73,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
         //        drawerEdgeDragWidth: 0,
-              drawer: MyDrawer()
+        drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer())
     );
   }
 }

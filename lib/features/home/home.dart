@@ -97,7 +97,7 @@ class _MyScaffoldState extends State<MyScaffold> {
         floatingActionButtonLocation:
           widget.hasData ? null : FloatingActionButtonLocation.centerDocked,
 //        drawerEdgeDragWidth: 0,
-        drawer: MyDrawer()
+        drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer())
     );
   }
 }
