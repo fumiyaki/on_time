@@ -10,6 +10,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
+import "../../common/drawer.dart";
+
 class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -70,6 +72,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
+        //        drawerEdgeDragWidth: 0,
+              drawer: MyDrawer()
     );
   }
 }
