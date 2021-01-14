@@ -1,9 +1,9 @@
 import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:flutter/material.dart';
-import 'features/home/home.dart';
+
 import 'features/auth/auth.dart';
-import 'features/schedule/schedule.dart';
 import 'features/chat/chat.dart';
 
 Future<void> main() async {
@@ -19,16 +19,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: _title,
-      initialRoute: '/',
-      routes: <String, WidgetBuilder> {
-        '/': (context) => Home(),
+        title: _title,
+        initialRoute: '/',
+        routes: <String, WidgetBuilder>{
+          '/': (context) => auth(),
 /*
         '/auth': (context) => AuthPage(),
         '/schedule': (context) => SchedulePage(),
 */
-        '/chat': (context) => MyHomePage()
-      }
-    );
+          '/chat': (context) => MyHomePage()
+        });
   }
 }
