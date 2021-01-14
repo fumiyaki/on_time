@@ -128,7 +128,8 @@ class _EventCardState extends State<EventCard> {
                 Row(children: [
                   SpaceBox.width(30),
                   Expanded(
-                    child: Text(event.eventDetails,
+                    child: Text(
+                        event.eventDetails,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 3, // 3行以上の説明文は省略表示
                         style: TextStyle(color: Colors.grey[700])),
