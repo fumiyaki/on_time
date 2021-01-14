@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
+import 'package:ontime/features/detail/detail.dart';
 
 class SearchBarDemoApp extends StatelessWidget {
   @override
@@ -7,7 +8,7 @@ class SearchBarDemoApp extends StatelessWidget {
     return new MaterialApp(
         title: 'Search Bar Demo',
         theme: new ThemeData(primarySwatch: Colors.blue),
-        home: new SearchBarDemoHome());
+        home: detailPage());
   }
 }
 
