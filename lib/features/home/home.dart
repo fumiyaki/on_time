@@ -54,6 +54,7 @@ class MyScaffold extends StatefulWidget {
 
   @override
   _MyScaffoldState createState() {
+/*
     if (isConnecting) {
       print('isConnecting in StfulWid');
     } else {
@@ -64,6 +65,8 @@ class MyScaffold extends StatefulWidget {
     } else {
       print('no Data in StfulWid');
     }
+
+ */
     return _MyScaffoldState();
   }
 }
@@ -72,8 +75,8 @@ class _MyScaffoldState extends State<MyScaffold> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    if (widget.isConnecting) print('isConnecting in State');
-    if (widget.hasData) print('hasData in State');
+//    if (widget.isConnecting) print('isConnecting in State');
+//    if (widget.hasData) print('hasData in State');
     return new Scaffold(
         body: SafeArea(
           child: EventCards(),
@@ -94,7 +97,7 @@ class _MyScaffoldState extends State<MyScaffold> {
         floatingActionButtonLocation:
           widget.hasData ? null : FloatingActionButtonLocation.centerDocked,
 //        drawerEdgeDragWidth: 0,
-        drawer: MyDrawer()
+        drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer())
     );
   }
 }

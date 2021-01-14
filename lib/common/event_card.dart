@@ -104,7 +104,7 @@ class _EventCardState extends State<EventCard> {
               visible: displayAll,
               child: Column(children: [
                 // イベント画像
-                FutureBuilder(
+                displayAll ? FutureBuilder(
                     future: getURL(event.id),
                     builder:
                         (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -121,7 +121,8 @@ class _EventCardState extends State<EventCard> {
                         // 画像取得エラー
                         return Container();
                       }
-                    }),
+                    })
+                : Container(),
                 SpaceBox.height(10),
 
                 // イベント詳細
