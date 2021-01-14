@@ -36,10 +36,18 @@ class auth extends StatelessWidget {
               RaisedButton(
                 child: Text('Sign in Google'),
                 onPressed: () {
-                  signInWithGoogle()
-                      .then((UserCredential e) =>
-                          Navigator.pushNamed(context, '/chat'))
-                      .catchError((e) => print(e));
+        try {
+          final userCredential = await signInWithGoogle();
+        } on FirebaseAuthException catch (e) {
+          print('FirebaseAuthException');
+          print('${e.code}');
+          Navigator.pushNamed(context, '/chat'))
+        } on Exception catch (e) {
+          print('Other Exception');
+          print('${e.toString()}');
+        }
+}
+                      
                 },
               ),
             ]),
