@@ -25,32 +25,77 @@ class auth extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("A"),
-      ),
-      body: Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              RaisedButton(
-                  child: Text('Sign in Google'),
-                  onPressed: () {
-                    try {
-                      final userCredential = signInWithGoogle();
-                    } on FirebaseAuthException catch (e) {
-                      print(
-                          'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFirebaseAuthException');
-                      print('${e.code}');
-                      Navigator.pushNamed(context, '/chat');
-                    } on Exception catch (e) {
-                      print(
-                          'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOther Exception');
-                      print('${e.toString()}');
-                    }
-                  }),
-            ]),
-      ),
-    );
+    return Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.5, 1],
+            colors: [
+              Color.fromRGBO(109, 113, 249, 1),
+              Color.fromRGBO(91, 190, 253, 1),
+            ],
+          ),
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset('images/LogoAppBar.png'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text('Event Schedule Sharing App',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        )),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(56, 80, 56, 0),
+                    child: OutlinedButton(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Image.asset('images/google.png', width: 24),
+                              Text('Google',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    //]  fontWeight: FontWeight.bold,
+                                  )),
+                              Text('')
+                            ],
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          primary: Colors.black,
+                          shape: const StadiumBorder(),
+                          side: const BorderSide(color: Colors.green),
+                        ),
+                        onPressed: () {
+                          try {
+                            final userCredential = signInWithGoogle();
+                          } on FirebaseAuthException catch (e) {
+                            print('FirebaseAuthException');
+                            print('${e.code}');
+                            Navigator.pushNamed(context, '/chat');
+                          } on Exception catch (e) {
+                            print('Other Exception');
+                            print('${e.toString()}');
+                          }
+                        }),
+                  ),
+                ]),
+          ),
+        ));
   }
 }
