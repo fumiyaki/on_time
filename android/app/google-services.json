@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "418376134040",
+    "firebase_url": "https://ontime-ac204-default-rtdb.firebaseio.com",
     "project_id": "ontime-ac204",
     "storage_bucket": "ontime-ac204.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "418376134040-pp22fug3ej9n2anujra98plsehigr8au.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ontime",
+            "certificate_hash": "04b6cb601d29b392b667427b80821486be35c220"
+          }
+        },
         {
           "client_id": "418376134040-62uka2o9e4eur4frgdrun8he9a6s5h24.apps.googleusercontent.com",
           "client_type": 3
@@ -29,6 +38,13 @@
             {
               "client_id": "418376134040-62uka2o9e4eur4frgdrun8he9a6s5h24.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "418376134040-g8ppqr40v9m0lq02ts7qp6rmj4eau6t0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ontime"
+              }
             }
           ]
         }
