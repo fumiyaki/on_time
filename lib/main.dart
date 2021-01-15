@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:flutter/material.dart';
+import 'features/event_setup/widgets/event_setup.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'features/home/home.dart';
 import 'features/schedule/schedule.dart';
@@ -27,8 +28,8 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder> {
         '/': (context) => Home(),
 /*
-        '/schedule': (context) => SchedulePage(),
         '/auth': (context) => AuthPage(),
+        '/schedule': (context) => SchedulePage(),
 */
 //        '/setup': (context) => EventSetup(),
         '/setup': (context) => MyCustomForm(),
