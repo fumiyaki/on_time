@@ -39,7 +39,7 @@ class _DeliveryMessage {
 }
 
 _OrderInfo _data(int id) => _OrderInfo(
-      date: DateTime(2020, 7, 25, 10, 30),
+      date: DateTime.now(),
       startdate: DateTime(2020, 7, 25, 10, 30),
       complete: 1,
       deliveryProcesses: [
@@ -126,18 +126,29 @@ class _InnerTimeline extends StatelessWidget {
             if (isEdgeIndex(index)) {
               return null;
             }
-            print(nowtime);
+            int sumtime = 0;
+            sumtime = sumtime + messages[index - 1].contenttime;
+            // ;
+
             return Padding(
               padding: EdgeInsets.only(left: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  //           Row(
-                  //         children: [
-                  Text(DateFormat('HH:mm').format(nowtime)),
-                  //          Text(messages[index - 1].message),
-                  //       ],
-                  //    ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
+                        child: Text(
+                            DateFormat('HH:mm').format(
+                                startingdate.add(Duration(minutes: sumtime))),
+                            style: TextStyle(
+                              fontSize: 16,
+                            )),
+                      ),
+                      Text(messages[index - 1].message),
+                    ],
+                  ),
                   Row(
                     children: [
                       Text(messages[index - 1].contenttime.toString(),
@@ -179,6 +190,7 @@ class _DeliveryProcesses extends StatelessWidget {
   final DateTime nowtime;
   @override
   Widget build(BuildContext context) {
+    DateTime startingdateCh = startingdate;
     return DefaultTextStyle(
       style: TextStyle(
         color: Color(0xff9b9b9b),
@@ -202,6 +214,11 @@ class _DeliveryProcesses extends StatelessWidget {
             connectionDirection: ConnectionDirection.before,
             itemCount: processes.length,
             contentsBuilder: (_, index) {
+              int bigsumtime = 0;
+              bigsumtime = bigsumtime + processes[index].time;
+              print(bigsumtime);
+              startingdateCh =
+                  startingdateCh.add(Duration(minutes: bigsumtime));
               return Padding(
                 padding: EdgeInsets.only(left: 8.0),
                 child: Column(
@@ -211,11 +228,25 @@ class _DeliveryProcesses extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          processes[index].name,
-                          style: DefaultTextStyle.of(context).style.copyWith(
-                                fontSize: 18.0,
-                              ),
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
+                              child: Text(
+                                  DateFormat('HH:mm').format(startingdateCh),
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    color: Colors.black,
+                                  )),
+                            ),
+                            Text(
+                              processes[index].name,
+                              style:
+                                  DefaultTextStyle.of(context).style.copyWith(
+                                        fontSize: 18.0,
+                                      ),
+                            ),
+                          ],
                         ),
                         Row(
                           children: [
@@ -233,7 +264,7 @@ class _DeliveryProcesses extends StatelessWidget {
                     ),
                     _InnerTimeline(
                         messages: processes[index].messages,
-                        startingdate: startingdate,
+                        startingdate: startingdateCh,
                         nowtime: nowtime),
                   ],
                 ),
