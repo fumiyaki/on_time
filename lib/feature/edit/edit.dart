@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ontime/feature/edit/screen.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:ontime/entity/event.dart';
+import 'package:ontime/common/space_box.dart';
 
 
 
@@ -39,79 +42,171 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+
       appBar: new AppBar(
         title: new Text('ontime'),
       ),
       body:
 
-      new Container(
+new Container(
+    padding: EdgeInsets.all(25.0),
         child:Column(
             children: <Widget>[
-              Row(
-                  children:<Widget>[
-                    Center(
-                      child:
-                      new Text(
-                        "ハッカソン",
-                        style: new TextStyle(fontSize:22.0,
+              Container(
+
+
+                  child: Row(
+                    children:<Widget>[
+                      Center(
+                        child:
+                        new Text(
+                        "Firebaseハッカソン",
+                        style: new TextStyle(fontSize:30.0,
                             color: const Color(0xFF000000),
-                            fontWeight: FontWeight.w200,
+                            fontWeight: FontWeight.w500,
                             fontFamily: "Roboto"),
                       ),
 
                     ),
 
                   ]
-    ),
-              Row(
-
-
-              ),
+    ),),
 
 
 
 
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children:<Widget>[
-               Center(
-                child:
-                new Text(
-                  "イベント開始",
-                  style: new TextStyle(fontSize:22.0,
-                      color: const Color(0xFF000000),
-                      fontWeight: FontWeight.w200,
-                      fontFamily: "Roboto"),
-                ),
+          Container(padding: EdgeInsets.only(top:20,bottom:0),
+              child: Row(
 
-              ),
-              Padding(
-                padding: EdgeInsets.only(left:24.0),
-                child: Text(
-                  "JST",
-                  style: new TextStyle(fontSize:22.0,
-                      color: const Color(0xFF000000),
-                      fontWeight: FontWeight.w200,
-                      fontFamily: "Roboto"),
-                ),
-              )
-                ]
+                  children:<Widget>[
+                    SpaceBox.width(30),
+                    Center(
+                      child:
+                      new Text(
+                        "一般公開用URL",
 
-              )
-        ]
-              ),
+                        style: new TextStyle(fontSize:18.0,
+                            color: const Color(0xFF000000),
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "Roboto"),
+                      ),
+
+                    ),
+
+                  ]
+              ),),
 
 
 
+            Container(
+              padding: EdgeInsets.only(top:5),
+              child: Row(
+                  children:<Widget>[
+                    SpaceBox.width(30),
+                    Column(
 
-        padding: const EdgeInsets.all(0.0),
-        alignment: Alignment.center,
+                        children:<Widget>[
 
 
-      ),
+
+
+                          Text(
+                            "aaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                            style: new TextStyle(fontSize:18.0,
+                                color: const Color(0xFF000000),
+                                fontWeight: FontWeight.w200,
+                                decoration: TextDecoration.underline,
+                                decorationColor: Colors.black,
+                                fontFamily: "Roboto"),
+                            textAlign: TextAlign.right,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ]
+                    ),
+
+                    IconButton(
+                      icon: Icon(Icons.copy),
+                      iconSize: 20,
+                      onPressed: () {},
+                    ),
+
+
+    ]
+
+              ),),
+
+
+
+
+          Container(
+              padding: EdgeInsets.only(top:20,bottom:0),
+              child:Row(
+                  children:<Widget>[
+                    SpaceBox.width(30),
+
+
+                      new Text(
+                        "共同編集用URL",
+
+                        style: new TextStyle(fontSize:18.0,
+                            color: const Color(0xFF000000),
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "Roboto"),
+                      ),
+                      new Text(
+                        "(ontimeチャットで共有禁止)",
+
+                        style: new TextStyle(fontSize:14.0,
+                            color: const Color(0xFF000000),
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "Roboto"),
+                      ),
+
+
+                  ]
+              ),),
+            Container(
+              padding: EdgeInsets.only(top:5),
+              child: Row(
+                  children:<Widget>[
+                    SpaceBox.width(30),
+
+                    Column(
+
+                    children:<Widget>[
+
+
+
+
+                    Text(
+                      "aaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                      style: new TextStyle(fontSize:18.0,
+                          color: const Color(0xFF000000),
+                          decoration: TextDecoration.underline,
+                          decorationColor: Colors.black,
+                          fontWeight: FontWeight.w200,
+                          fontFamily: "Roboto"),
+                      textAlign: TextAlign.right,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+
+                    ]
+                    ),
+
+                    IconButton(
+                      icon: Icon(Icons.copy),
+                      iconSize: 20,
+
+                      onPressed: () {},
+                    ),
+                  ]
+    ),),
+
+
+
+      ]
+      )),
     );
   }
 }
