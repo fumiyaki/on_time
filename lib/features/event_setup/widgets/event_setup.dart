@@ -1,14 +1,18 @@
 //formのデータを送る
 
 import 'dart:io';
-
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import '../../../common/app_bar.dart';
+import '../../../common/drawer.dart';
+import '../../../entity/event.dart';
 
-
+/*
 class EventSetup extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -23,6 +27,7 @@ class EventSetup extends StatelessWidget {
     );
   }
 }
+*/
 
 // Create a Form widget.
 class MyCustomForm extends StatefulWidget {
@@ -38,7 +43,11 @@ class MyCustomForm extends StatefulWidget {
 // This class holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
-
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  String _eventId;
+  String _password;
+  Uri _viewerURL;
+  Uri _editorURL;
   final EventTitle = TextEditingController();
   final EventDetail = TextEditingController();
 
@@ -76,16 +85,21 @@ class MyCustomFormState extends State<MyCustomForm> {
           .add({
         'event_date': EventDate.toString(),
         'event_title': EventTitle.text,
-        'event_detail': EventDetail.text
+        'event_detail': EventDetail.text,
+        'password': _password
       })
-          .then((value) => print("Event Added"))
+          .then((value) {
+            _eventId = value.id;
+            print("Event Added");
+      })
           .catchError((error) => print("Failed to add event: $error"));
     }
 
     //Future uploadImageToFirebase(BuildContext context) async {
     Future<void> uploadImageToFirebase() async {
       String fileName = basename(_imageFile.path);
-      Reference firebaseStorageRef = FirebaseStorage.instance.ref().child('event_images/$fileName');
+      final path = fileName;
+      Reference firebaseStorageRef = FirebaseStorage.instance.ref().child("event_images/" + _eventId + extension(path));
       UploadTask uploadTask = firebaseStorageRef.putFile(_imageFile);
       TaskSnapshot taskSnapshot = await uploadTask;
       //uploadTask.onCompleteをuploadTaskに変更
@@ -107,12 +121,11 @@ class MyCustomFormState extends State<MyCustomForm> {
         });
     }
 
+    double screenWidth = MediaQuery.of(context).size.width;
     // Build a Form widget using the _formKey created above.
     return Scaffold(
-      appBar: AppBar(
-        title: Text('OnTime'),
-      ),
-      body: Center(
+      appBar: MyAppBar(_scaffoldKey),
+      body: Scaffold(body: Center(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
@@ -180,7 +193,18 @@ class MyCustomFormState extends State<MyCustomForm> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: RaisedButton(
-                      onPressed: (){addEvents();uploadImageToFirebase();},
+                      onPressed: (){
+                        _makeLinks();
+                        addEvents();
+                        uploadImageToFirebase();
+                        Event _event = Event(
+                          id: _eventId,
+                          viewerURL: _viewerURL,
+                          password: _password
+                        );
+                        Navigator.pushNamed(context, 'schedule/',
+                        arguments: _event);
+                        },
                       child: Text(
                         '登録',
                         style:
@@ -195,6 +219,63 @@ class MyCustomFormState extends State<MyCustomForm> {
           ),
         ),
       ),
+        drawerEdgeDragWidth: 0,
+        drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer()),
+        key: _scaffoldKey,
+      ),
     );
+  }
+
+  void _makeLinks() async {
+    // 小文字のアルファベットの文字列を作成
+    int smallLetterStart = 97;
+    int smallLetterCount = 26;
+
+    var alphabetArray = [];
+    // 10個のアルファベットがある文字列を作成して、最後にjoinで繋げています
+    var rand = new math.Random();
+    for (var i = 0; i < 10; i++) {
+      // 0-25の乱数を発生させます
+      int number = rand.nextInt(smallLetterCount);
+      int randomNumber = number + smallLetterStart;
+      alphabetArray.add(String.fromCharCode(randomNumber));
+    }
+
+    final DynamicLinkParameters viewerParameters = DynamicLinkParameters(
+      uriPrefix: 'https://appontime.page.link',
+      link: Uri.parse('https://google.com?id=' + _eventId + '&pass=' + _password),
+      androidParameters: AndroidParameters(
+        packageName: 'com.example.ontime',
+//        minimumVersion: 125,
+      ),
+      iosParameters: IosParameters(
+        bundleId: 'com.example.ontime',
+//        minimumVersion: '1.0.1',
+//        appStoreId: '123456789',
+      ),
+    );
+
+    _viewerURL = await viewerParameters.buildUrl();
+  }
+
+  DynamicLinkParameters getParameters(bool isEditor) {
+    String _link = 'https://google.com?id=' + _eventId;
+    if (isEditor) {
+      _link += '&pass=' + _password;
+    }
+
+    return DynamicLinkParameters(
+        uriPrefix: 'https://appontime.page.link',
+        link: Uri.parse(_link),
+          androidParameters: AndroidParameters(
+            packageName: 'com.example.ontime',
+  //        minimumVersion: 125,
+          ),
+          iosParameters: IosParameters(
+            bundleId: 'com.example.ontime',
+    //        minimumVersion: '1.0.1',
+    //        appStoreId: '123456789',
+          ),
+        );
   }
 }

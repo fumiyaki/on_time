@@ -63,6 +63,9 @@ dependencies:
   sqflite: ^1.3.2+2
   path: ^1.7.0
 
+  # for Dynamic Link
+  firebase_dynamic_links: ^0.7.0+1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

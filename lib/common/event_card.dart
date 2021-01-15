@@ -104,33 +104,34 @@ class _EventCardState extends State<EventCard> {
               visible: displayAll,
               child: Column(children: [
                 // イベント画像
-                displayAll ? FutureBuilder(
-                    future: getURL(event.id),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<String> snapshot) {
-                      // 画像URL取得中の表示
-                      if (snapshot.connectionState != ConnectionState.done) {
-                        return CircularProgressIndicator();
-                      }
+                displayAll
+                    ? FutureBuilder(
+                        future: getURL(event.id),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<String> snapshot) {
+                          // 画像URL取得中の表示
+                          if (snapshot.connectionState !=
+                              ConnectionState.done) {
+                            return CircularProgressIndicator();
+                          }
 
-                      if (snapshot.hasData) {
-                        return ConstrainedBox(
-                            constraints: BoxConstraints(maxHeight: 150),
-                            child: Image.network(snapshot.data));
-                      } else {
-                        // 画像取得エラー
-                        return Container();
-                      }
-                    })
-                : Container(),
+                          if (snapshot.hasData) {
+                            return ConstrainedBox(
+                                constraints: BoxConstraints(maxHeight: 150),
+                                child: Image.network(snapshot.data));
+                          } else {
+                            // 画像取得エラー
+                            return Container();
+                          }
+                        })
+                    : Container(),
                 SpaceBox.height(10),
 
                 // イベント詳細
                 Row(children: [
                   SpaceBox.width(30),
                   Expanded(
-                    child: Text(
-                        event.eventDetails,
+                    child: Text(event.eventDetails,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 3, // 3行以上の説明文は省略表示
                         style: TextStyle(color: Colors.grey[700])),
@@ -153,15 +154,10 @@ class _EventCardState extends State<EventCard> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(3)),
                           onPressed: () {
-                            /*
-                                        // スケジュール画面への遷移
-                                        Navigator.pushNamed(
-                                          context,
-                                          SchedulePage().routeName,
-                                        // eventsコレクションのドキュメントIDを渡す
-                                          arguments: events[index].reference.id
-                                        );
-                                        */
+                            /// スケジュール画面への遷移
+                            Navigator.pushNamed(context, '/schedule',
+                                //// eventsコレクションのドキュメントIDを渡す
+                                arguments: event.id);
                           },
                         )),
                     SpaceBox.width(10)
