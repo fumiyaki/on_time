@@ -40,7 +40,8 @@ class _HomeState extends State<Home> {
           if (deepLink != null) {
             String eventId = Map.from(map)['id'];
             String password = Map.from(map)['pass'];
-            QueryParameter queryParameter = new QueryParameter(eventId, password);
+            QueryParameter queryParameter = new QueryParameter(
+                eventId: eventId, password: password);
             if (userId == null) {
               Navigator.pushNamed(context, '/auth', arguments: queryParameter);
             } else {
