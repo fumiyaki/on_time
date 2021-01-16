@@ -50,7 +50,8 @@ class auth extends StatelessWidget {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Image.asset('images/LogoAppBar.png'),
+//                    child: Image.asset('images/LogoAppBar.png'),
+                    child: Image.asset('images/white_logo_transparent.png'),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),

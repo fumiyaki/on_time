@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:timelines/timelines.dart';
+import '../../common/app_bar.dart';
+import '../../common/drawer.dart';
 
 const kTileHeight = 64.0;
 
@@ -74,12 +76,13 @@ _OrderInfo _data(int id) => _OrderInfo(
 
 class EditPage extends StatelessWidget {
   final data = _data(1);
+  GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('ここの部分は他のところからいただきます'),
-        ),
+        appBar: MyAppBar(_key),
+        body: new Scaffold(
         body: new Container(
           child: SingleChildScrollView(
             padding: EdgeInsets.all(25.0),
@@ -209,7 +212,12 @@ class EditPage extends StatelessWidget {
             )
           ),
         ),
-    );
+          /// ドロワー
+          drawerEdgeDragWidth: 0,
+          drawer: SizedBox(
+              width: 0.8 * screenWidth, child: MyDrawer(login: true)),
+          key: _key,
+    ));
   }
 }
 

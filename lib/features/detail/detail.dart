@@ -77,7 +77,7 @@ _OrderInfo _data(int id) => _OrderInfo(
 
 class detailPage extends StatelessWidget {
   final data = _data(1);
-  GlobalKey<ScaffoldState> _key;
+  GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
   bool _loggedIn = true;
   @override
   Widget build(BuildContext context) {
@@ -85,91 +85,103 @@ class detailPage extends StatelessWidget {
     return Scaffold(
         appBar: MyAppBar(_key),
         body: Scaffold(
-            appBar: AppBar(
-                backgroundColor: Colors.white,
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                        icon: Icon(Icons.brush_sharp),
-                        //   onPressed: () => _key.currentState.openDrawer(),
+          appBar: AppBar(
+              backgroundColor: Colors.white,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                      icon: Icon(Icons.brush_sharp),
+                      onPressed: () => Navigator.pushNamed(context, '/edit'),
                         color: Colors.grey[800]),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 2),
-                      child: Column(
+                        Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 2),
+                        child: Column(
                         children: [
-                          Text("Firebaseハッカソン",
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              )),
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 2, 2),
-                                child: Text("-",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                                child: Text("32",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
-                                child: Text("h",
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.blue,
-                                    )),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-                                child: Text("21",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
-                                child: Text("m",
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.blue,
-                                    )),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
+                        Text("Firebaseハッカソン",
+                        style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        )),
+                        Row(
+                        children: [
+                        Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 2, 2),
+                        child:
+                         Text("-",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                              child: Text("32",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+                              child: Text("h",
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.blue,
+                                  )),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                              child: Text("21",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+                              child: Text("m",
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.blue,
+                                  )),
+                            )
+                          ],
+                        )
+                      ],
                     ),
-                    IconButton(
-                        icon: Icon(Icons.share),
-                        //    onPressed: () => Navigator.pop(context, "SearchBarDemoApp"),
-                        color: Colors.grey[800]),
-                  ],
-                )),
-            body: _DeliveryProcesses(
-                processes: data.deliveryProcesses,
-                doing: data.complete,
-                startingdate: data.startdate,
-                nowtime: data.date),
+                  ),
+                  IconButton(
+                      icon: Icon(Icons.share),
+                      //    onPressed: () => Navigator.pop(context, "SearchBarDemoApp"),
+                      color: Colors.grey[800]),
+                ],
+              )),
+          body: _DeliveryProcesses(
+              processes: data.deliveryProcesses,
+              doing: data.complete,
+              startingdate: data.startdate,
+              nowtime: data.date),
+
+          /// ログイン時のみチャットボタン表示
+          floatingActionButton: _loggedIn ?
+          FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/chat');
+              },
+              child: new Icon(Icons.chat)) :
+          Container(),
+
           /// ドロワー
           drawerEdgeDragWidth: 0,
           drawer: SizedBox(
               width: 0.8 * screenWidth, child: MyDrawer(login: _loggedIn)),
-          key: _key,));
+          key: _key,
+        ));
   }
 }
 
