@@ -3,11 +3,16 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/src/services/message_codecs.dart';
 
 class auth extends StatelessWidget {
   Future<UserCredential> signInWithGoogle() async {
 // Trigger the authentication flow
-    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+  print('debug');
+    final GoogleSignInAccount googleUser = await GoogleSignIn(
+      scopes: ['email', 'profile'], hostedDomain: '', clientId: '',
+    ).signIn();
+    print('debug2');
 
 // Obtain the auth details from the request
     final GoogleSignInAuthentication googleAuth =
@@ -84,7 +89,13 @@ class auth extends StatelessWidget {
                         onPressed: () {
                           try {
                             final userCredential = signInWithGoogle();
-                          } on FirebaseAuthException catch (e) {
+                          }
+/*
+                          on PlatformException catch (e) {
+                            print('pfexc');
+                          }
+*/
+                           on FirebaseAuthException catch (e) {
                             print('FirebaseAuthException');
                             print('${e.code}');
                             Navigator.pushNamed(context, '/chat');
