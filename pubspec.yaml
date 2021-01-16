@@ -58,6 +58,7 @@ dependencies:
   timelines: ^0.0.2+1
   flutter_search_bar: ^2.1.0
   flutter_datetime_picker: ^1.4.0
+  drag_and_drop_lists: ^0.2.10
 
 dev_dependencies:
   flutter_test:
