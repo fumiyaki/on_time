@@ -41,8 +41,8 @@ class _DeliveryMessage {
 
 _OrderInfo _data(int id) => _OrderInfo(
       date: DateTime.now(),
-      startdate: DateTime(2020, 7, 25, 10, 30),
-      complete: 1,
+      startdate: DateTime(2020, 7, 25, 0, 30),
+      complete: 0,
       deliveryProcesses: [
         //あえて1足しておく
         _DeliveryProcess(
@@ -94,94 +94,77 @@ class detailPage extends StatelessWidget {
                       icon: Icon(Icons.brush_sharp),
                       onPressed: () => Navigator.pushNamed(context, '/edit'),//, arguments: argument),
                         color: Colors.grey[800]),
-                        Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 2),
-                        child: Column(
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 2),
+                      child: Column(
                         children: [
-                        Text("Firebaseハッカソン",
-                        style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        )),
-                        Row(
-                        children: [
-                        Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 2, 2),
-                        child:
-                         Text("-",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                              child: Text("32",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
-                              child: Text("h",
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.blue,
-                                  )),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-                              child: Text("21",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
-                              child: Text("m",
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.blue,
-                                  )),
-                            )
-                          ],
-                        )
-                      ],
+                          Text("Firebaseハッカソン",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              )),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 2, 2),
+                                child: Text("-",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                                child: Text("32",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+                                child: Text("h",
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.blue,
+                                    )),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                                child: Text("21",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+                                child: Text("m",
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.blue,
+                                    )),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                  IconButton(
-                      icon: Icon(Icons.share),
-                      //    onPressed: () => Navigator.pop(context, "SearchBarDemoApp"),
-                      color: Colors.grey[800]),
-                ],
-              )),
-          body: _DeliveryProcesses(
-              processes: data.deliveryProcesses,
-              doing: data.complete,
-              startingdate: data.startdate,
-              nowtime: data.date),
-
-          /// ログイン時のみチャットボタン表示
-          floatingActionButton: _loggedIn ?
-          FloatingActionButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/chat');
-              },
-              child: new Icon(Icons.chat)) :
-          Container(),
-
-          /// ドロワー
-          drawerEdgeDragWidth: 0,
-          drawer: SizedBox(
-              width: 0.8 * screenWidth, child: MyDrawer(login: _loggedIn)),
-          key: _key,
-        ));
+                    IconButton(
+                        icon: Icon(Icons.refresh),
+                        //    onPressed: () => Navigator.pop(context, "SearchBarDemoApp"),
+                        color: Colors.grey[800]),
+                  ],
+                )),
+            body: _DeliveryProcesses(
+                processes: data.deliveryProcesses,
+                doing: data.complete,
+                startingdate: data.startdate,
+                nowtime: data.date)));
   }
 }
 
@@ -190,20 +173,31 @@ class _InnerTimeline extends StatefulWidget {
     @required this.messages,
     @required this.startingdate,
     @required this.nowtime,
+    @required this.nowindex,
+    @required this.nowindexlist,
+    @required this.timesnowdate,
   });
 
   final List<_DeliveryMessage> messages;
   final DateTime startingdate;
   final DateTime nowtime;
+  final int nowindex;
+  final List<List<dynamic>> nowindexlist; //3
+  final timesnowdate;
   @override
   __InnerTimelineState createState() => __InnerTimelineState();
 }
 
-class __InnerTimelineState extends State<_InnerTimeline> {
-  List<bool> check_box = List.filled(10, false);
+var nowindexlist;
+var timenowdate = <DateTime>[];
 
+class __InnerTimelineState extends State<_InnerTimeline> {
   @override
   Widget build(BuildContext context) {
+    int sumtime = 0;
+    var timenowdate = widget.timesnowdate;
+    print(timenowdate);
+    var nowindexlist = widget.nowindexlist;
     bool isEdgeIndex(int index) {
       return index == 0 || index == widget.messages.length + 1;
     }
@@ -224,23 +218,64 @@ class __InnerTimelineState extends State<_InnerTimeline> {
               ),
         ),
         builder: TimelineTileBuilder(
-          indicatorBuilder: (_, index) => !isEdgeIndex(index)
-              ? ContainerIndicator(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
-                    child: Container(
-                      child: new Checkbox(
-                          activeColor: Colors.blue,
-                          value: check_box[index],
-                          onChanged: (bool value) => setState(() {
-                                print(check_box[index]);
-                                check_box[index] = value;
-                                print(check_box[index]);
-                              })),
+          indicatorBuilder: (_, index) {
+            if (!isEdgeIndex(index)) {
+              return ContainerIndicator(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
+                  child: Container(
+                    child: new Checkbox(
+                      activeColor: Color(0xff66c97f),
+                      value: nowindexlist[widget.nowindex][index - 1],
+                      onChanged: (bool value) {
+                        setState(() {
+                          if (value) {
+                            for (var i = index - 1; i >= 0; i--) {
+                              //飛ばし
+                              // print(i);DateTime.now()
+                              nowindexlist[widget.nowindex][i] = true;
+                            }
+                            //  print(timenowdate[widget.nowindex].length);
+                            print(index);
+                            if (timenowdate[widget.nowindex].length ==
+                                index - 1) {
+                              timenowdate[widget.nowindex].add(DateTime.now());
+                            } else if (timenowdate[widget.nowindex].length ==
+                                index) {
+                            } else if (timenowdate[widget.nowindex].length ==
+                                0) {
+                              for (var x = 0; x < index; x++) {
+                                timenowdate[widget.nowindex]
+                                    .add(DateTime.now());
+                              }
+                            } else {
+                              for (var i = 0;
+                                  i <
+                                      index +
+                                          1 -
+                                          timenowdate[widget.nowindex]
+                                              .length;) {
+                                timenowdate[widget.nowindex]
+                                    .add(DateTime.now());
+                                i += 1;
+                              }
+                            }
+                          } else {
+                            nowindexlist[widget.nowindex][index - 1] = value;
+                            timenowdate[widget.nowindex]
+                                .removeRange(index - 1, index);
+                          }
+                          print(timenowdate);
+                        });
+                      },
                     ),
                   ),
-                )
-              : null,
+                ),
+              );
+            } else {
+              return null;
+            }
+          },
           startConnectorBuilder: (_, index) => SizedBox(
             height: 40.0,
             width: 16.0,
@@ -248,15 +283,37 @@ class __InnerTimelineState extends State<_InnerTimeline> {
           ),
           endConnectorBuilder: (_, index) => Connector.solidLine(),
           contentsBuilder: (_, index) {
+            String pushtime;
             if (isEdgeIndex(index)) {
               return null;
             }
-            int sumtime = 0;
+
             if (index > 1) {
               sumtime = sumtime + widget.messages[index - 2].contenttime;
             }
-            // ;
-
+            var styletext;
+            print(sumtime);
+            if (timenowdate[widget.nowindex].length == 0) {
+              pushtime = DateFormat('HH:mm')
+                  .format(widget.startingdate.add(Duration(minutes: sumtime)));
+              styletext = TextStyle(fontSize: 16, color: Color(0xff9b9b9b));
+            } else if (timenowdate[widget.nowindex].length == index - 1) {
+              pushtime = DateFormat('HH:mm')
+                  .format(timenowdate[widget.nowindex][index - 2]);
+              if (int.parse(DateFormat('HHmm')
+                          .format(timenowdate[widget.nowindex][index - 2])) -
+                      int.parse(DateFormat('HHmm').format(widget.startingdate
+                          .add(Duration(minutes: sumtime)))) <
+                  0) {
+                styletext = TextStyle(fontSize: 16, color: Colors.red);
+              } else {
+                styletext = TextStyle(fontSize: 16, color: Colors.blue);
+              }
+            } else {
+              pushtime = DateFormat('HH:mm')
+                  .format(widget.startingdate.add(Duration(minutes: sumtime)));
+              styletext = TextStyle(fontSize: 16, color: Color(0xff9b9b9b));
+            }
             return Padding(
               padding: EdgeInsets.only(left: 8.0),
               child: Row(
@@ -266,12 +323,7 @@ class __InnerTimelineState extends State<_InnerTimeline> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
-                        child: Text(
-                            DateFormat('HH:mm').format(widget.startingdate
-                                .add(Duration(minutes: sumtime))),
-                            style: TextStyle(
-                              fontSize: 16,
-                            )),
+                        child: Text(pushtime, style: styletext),
                       ),
                       Text(widget.messages[index - 1].message),
                     ],
@@ -318,6 +370,8 @@ class _DeliveryProcesses extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DateTime startingdateCh = startingdate;
+    var timenowdate = <List>[[], [], []];
+    var checklist = <List>[[], [], []];
     return DefaultTextStyle(
       style: TextStyle(
         color: Color(0xff9b9b9b),
@@ -343,8 +397,11 @@ class _DeliveryProcesses extends StatelessWidget {
               itemCount: processes.length,
               contentsBuilder: (_, index) {
                 int bigsumtime = 0;
+                for (var y = 0; y < processes[index].messages.length; y++) {
+                  checklist[index].add(false);
+                }
+
                 bigsumtime = bigsumtime + processes[index].time;
-                print(bigsumtime);
                 startingdateCh =
                     startingdateCh.add(Duration(minutes: bigsumtime));
                 return Padding(
@@ -393,14 +450,16 @@ class _DeliveryProcesses extends StatelessWidget {
                       _InnerTimeline(
                           messages: processes[index].messages,
                           startingdate: startingdateCh,
-                          nowtime: nowtime),
+                          nowtime: nowtime,
+                          nowindex: index,
+                          nowindexlist: checklist,
+                          timesnowdate: timenowdate),
                     ],
                   ),
                 );
               },
               indicatorBuilder: (_, index) {
                 if (doing >= index) {
-                  print(index);
                   return DotIndicator(
                     color: Color(0xff66c97f),
                     child: Icon(
