@@ -25,15 +25,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool _loggedIn;
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    /// ログイン状態を確認
-    /// 多分ここに時間がかかるのから，初回起動時に渡す引数がnullになってエラーが出ちゃう
     FirebaseAuth.instance
         .authStateChanges()
         .listen((User user) {
-//          setState(() {
       if (user == null) {
         print('in');
         _loggedIn = false;
@@ -41,93 +39,10 @@ class _HomeState extends State<Home> {
         print('out');
         _loggedIn = true;
       }
-//        });
-      print(_loggedIn);
-      return new MyScaffold(login: _loggedIn);
     });
-    return new MyScaffold(login: _loggedIn);
-  }
 
-  /// Dynamic Link対応
-  /// アプリインストール済みの場合の処理
-  ///　ログイン状態をみた上で飛ばす先の画面をauthかdetailか判定したい
-  /// まだうまく行ってない
-/*
-  @override
-  void initState() {
-    super.initState();
-    _getLoggedIn();
-    _initDynamicLinks(_loggedIn);
-      print('in initState');
-  }
-
-  /// ログイン済みかどうか
-  void _getLoggedIn() {
-  FirebaseAuth.instance
-      .authStateChanges()
-      .listen((User user) {
-  if (user == null) {
-    print('yet');
-    _loggedIn = false;
-  } else {
-  print('done');
-    _loggedIn = true;
-  }
-  });
-//    return await FirebaseAuth.instance.onAuthStateChanged.hasData;
-  }
-
-  void _initDynamicLinks(bool loggedIn) async {
-    FirebaseDynamicLinks.instance.onLink(
-        onSuccess: (PendingDynamicLinkData dynamicLink) async {
-          final Uri deepLink = dynamicLink?.link;
-          Map<String, String> map = deepLink.queryParameters;
-          if (deepLink != null) {
-            String eventId = Map.from(map)['id'];
-            String password = Map.from(map)['pass'];
-            QueryParameter queryParameter =
-            new QueryParameter(eventId: eventId, password: password);
-            if (!loggedIn) {
-              Navigator.pushNamed(context, '/auth', arguments: queryParameter);
-            } else {
-              Navigator.pushNamed(context, '/schedule', arguments: queryParameter);
-            }
-          }
-        }, onError: (OnLinkErrorException e) async {
-      print(e.message);
-    });
-  }
- */
-}
-
-/// ログイン判定にprovideを使った場合
-/// うまく行かないので今んとこ却下
-/*
-class Home extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final bool _loggedIn = context.watch<AuthModel>().loggedIn;
-    print(_loggedIn);
-    return MyScaffold(login: _loggedIn);
-  }
-}
-*/
-
-/// 画面。引数にログインしてるかどうかをとる
-class MyScaffold extends StatefulWidget {
-  final login;
-  MyScaffold({this.login});
-  @override
-  _MyScaffoldState createState() => _MyScaffoldState();
-}
-
-class _MyScaffoldState extends State<MyScaffold> {
-  /// AppBarからDrawerを呼ぶためのキー
-  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-
-  @override
-  Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    print('yahho');
 
     return new Scaffold(
         appBar: MyAppBar(_key),
@@ -140,13 +55,15 @@ class _MyScaffoldState extends State<MyScaffold> {
           ),
 
           /// 未ログイン時のみログインボタン表示
-          floatingActionButton: widget.login
+          floatingActionButton: _loggedIn
               ? Container(width: 0, height: 0)
               : Container(
                   width: 0.7 * screenWidth,
                   child: FloatingActionButton.extended(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/auth');
+                        Navigator.pushNamed(context, '/auth').then((value) {
+                          setState((){print('back');});
+                        });
                       },
                       label: Text('ログイン'))),
           floatingActionButtonLocation:
@@ -154,7 +71,7 @@ class _MyScaffoldState extends State<MyScaffold> {
 
           /// ドロワー
           drawerEdgeDragWidth: 0,
-          drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer(login: widget.login)),
+          drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer(login: _loggedIn)),
           key: _key,
         ));
   }
@@ -239,14 +156,57 @@ class _EventCardsState extends State<EventCards> {
       },
     );
   }
-  /*
-        // Firebase初期化中の表示
-        return Center(child: CircularProgressIndicator());
-      },
-    );
+
+/// Dynamic Link対応
+/// アプリインストール済みの場合の処理
+///　ログイン状態をみた上で飛ばす先の画面をauthかdetailか判定したい
+/// まだうまく行ってない
+/*
+  @override
+  void initState() {
+    super.initState();
+    _getLoggedIn();
+    _initDynamicLinks(_loggedIn);
+      print('in initState');
   }
 
-         */
+  /// ログイン済みかどうか
+  void _getLoggedIn() {
+  FirebaseAuth.instance
+      .authStateChanges()
+      .listen((User user) {
+  if (user == null) {
+    print('yet');
+    _loggedIn = false;
+  } else {
+  print('done');
+    _loggedIn = true;
+  }
+  });
+//    return await FirebaseAuth.instance.onAuthStateChanged.hasData;
+  }
+
+  void _initDynamicLinks(bool loggedIn) async {
+    FirebaseDynamicLinks.instance.onLink(
+        onSuccess: (PendingDynamicLinkData dynamicLink) async {
+          final Uri deepLink = dynamicLink?.link;
+          Map<String, String> map = deepLink.queryParameters;
+          if (deepLink != null) {
+            String eventId = Map.from(map)['id'];
+            String password = Map.from(map)['pass'];
+            QueryParameter queryParameter =
+            new QueryParameter(eventId: eventId, password: password);
+            if (!loggedIn) {
+              Navigator.pushNamed(context, '/auth', arguments: queryParameter);
+            } else {
+              Navigator.pushNamed(context, '/schedule', arguments: queryParameter);
+            }
+          }
+        }, onError: (OnLinkErrorException e) async {
+      print(e.message);
+    });
+  }
+*/
 
   /// 検索処理
   Future<List<DocumentSnapshot>> search(String search) async {

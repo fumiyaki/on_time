@@ -25,6 +25,7 @@ Future<void> main() async {
 /// This is the main application widget.
 class MyApp extends StatelessWidget {
   static const String _title = 'OnTime';
+  final RouteObserver<PageRoute> routeObserver = new RouteObserver<PageRoute>();
   @override
   Widget build(BuildContext context) {
     return
@@ -46,7 +47,8 @@ class MyApp extends StatelessWidget {
 //        '/schedule': (context) => SchedulePage(),
         '/setup': (context) => MyCustomForm(),
         '/chat': (context) => MyHomePage()
-      }
+      },
+          navigatorObservers: <NavigatorObserver>[routeObserver]
     );
 //    );
   }
