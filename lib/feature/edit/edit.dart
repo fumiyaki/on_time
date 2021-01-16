@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:timelines/timelines.dart';
 import 'package:ontime/feature/edit/screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 //import 'package:ontime/entity/event.dart';
 //import 'package:ontime/common/space_box.dart';
-
-
-
-void main() {
-  runApp(MyApp());
-}
 
 class MyApp extends StatelessWidget {
   @override
