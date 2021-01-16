@@ -75,8 +75,6 @@ _OrderInfo _data(int id) => _OrderInfo(
       ],
     );
 
-List<bool> check_box = List.filled(10, false);
-
 class detailPage extends StatelessWidget {
   final data = _data(1);
   GlobalKey<ScaffoldState> _key;
@@ -178,12 +176,13 @@ class _InnerTimeline extends StatefulWidget {
   final List<_DeliveryMessage> messages;
   final DateTime startingdate;
   final DateTime nowtime;
-
   @override
   __InnerTimelineState createState() => __InnerTimelineState();
 }
 
 class __InnerTimelineState extends State<_InnerTimeline> {
+  List<bool> check_box = List.filled(10, false);
+
   @override
   Widget build(BuildContext context) {
     bool isEdgeIndex(int index) {
@@ -198,7 +197,7 @@ class __InnerTimelineState extends State<_InnerTimeline> {
           connectorTheme: TimelineTheme.of(context).connectorTheme.copyWith(
                 thickness: 3.0,
                 space: 8.0,
-                indent: 2.0,
+                indent: 0,
               ),
           indicatorTheme: TimelineTheme.of(context).indicatorTheme.copyWith(
                 size: 10.0,
@@ -211,11 +210,14 @@ class __InnerTimelineState extends State<_InnerTimeline> {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
                     child: Container(
-                      child: Checkbox(
-                        activeColor: Colors.blue,
-                        value: check_box[index],
-                        //      onChanged: check_box[index]?check_box[index] = false : check_box[index] = true,
-                      ),
+                      child: new Checkbox(
+                          activeColor: Colors.blue,
+                          value: check_box[index],
+                          onChanged: (bool value) => setState(() {
+                                print(check_box[index]);
+                                check_box[index] = value;
+                                print(check_box[index]);
+                              })),
                     ),
                   ),
                 )
