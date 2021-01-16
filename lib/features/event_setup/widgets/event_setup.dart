@@ -11,6 +11,7 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import '../../../common/app_bar.dart';
 import '../../../common/drawer.dart';
 import '../../../entity/event.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 /*
 class EventSetup extends StatelessWidget {
@@ -109,12 +110,15 @@ class MyCustomFormState extends State<MyCustomForm> {
     }
 
     Future<void> _selectDate(BuildContext context) async {
-      final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: EventDate, // Refer step 1
-        firstDate: DateTime(2021),
-        lastDate: DateTime(2050),
-      );
+      final DateTime picked = await DatePicker.showDateTimePicker(context,
+        showTitleActions: true,
+        minTime: DateTime(2020, 1, 1),
+        maxTime: DateTime(2100, 12, 31),
+          onChanged: (date) {
+            print('change $date');
+          }, onConfirm: (date) {
+            print('confirm $date');
+          }, currentTime: DateTime.now(), locale: LocaleType.jp);
       if (picked != null && picked != EventDate)
         setState(() {
           EventDate = picked;
@@ -135,7 +139,8 @@ class MyCustomFormState extends State<MyCustomForm> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    "${EventDate.toLocal()}".split(' ')[0],
+                    //"${EventDate.toLocal()}".split(' ')[0],
+                    "${EventDate.toLocal()}",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 16.0,),
@@ -148,8 +153,8 @@ class MyCustomFormState extends State<MyCustomForm> {
                     ),
                     color: Colors.blue,
                   ),
-                  SizedBox(height: 16),
-                  TextFormField(
+                    SizedBox(height: 16),
+                    TextFormField(
                     controller: EventTitle,
                     decoration: const InputDecoration(
                       labelText: 'イベントのタイトル',

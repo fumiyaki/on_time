@@ -1,16 +1,12 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
-
 import "../../entity/event.dart";
 import "../../entity/query_parameter.dart";
 import "../../common/app_bar.dart";
