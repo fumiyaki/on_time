@@ -1,41 +1,96 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
-import 'package:flutter_search_bar/flutter_search_bar.dart';
-import 'package:ontime/features/detail/detail.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
-import 'package:ontime/features/detail/detail.dart';
 import "../../entity/event.dart";
 import "../../entity/query_parameter.dart";
 import "../../common/app_bar.dart";
 import "../../common/event_card.dart";
 import "../../common/drawer.dart";
+import "../../common/auth_model.dart";
 
+/// ホーム画面（イベント一覧）
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  /// Dynamic Link対応
-  /// インストール済みの場合
+  bool _loggedIn = false;
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  StreamController<bool> _controller = StreamController<bool>.broadcast();
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    return new Scaffold(
+        appBar: MyAppBar(_key),
+        body: StreamBuilder(
+        stream: _controller.stream,
+        builder: (context, snapshot) {
+
+            /// AppBarを最前面にするためにScaffoldを二重に
+            return Scaffold(
+          body:
+          SafeArea(
+            child: EventCards(),
+          ),
+
+          /// 未ログイン時のみログインボタン表示
+          floatingActionButton: _loggedIn
+              ? Container(width: 0, height: 0)
+              : Container(
+                  width: 0.7 * screenWidth,
+                  child: FloatingActionButton.extended(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/auth').then((value) {
+                          setState(() {
+                            print('back');
+                          });
+                        });
+                      },
+                      label: Text('ログイン'))),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+
+          /// ドロワー
+          drawerEdgeDragWidth: 0,
+          drawer: SizedBox(
+              width: 0.8 * screenWidth, child: MyDrawer(login: _loggedIn)),
+          key: _key,
+        );}
+            ));
+  }
+
+
+/// Dynamic Link対応
+/// アプリインストール済みの場合の処理
+///　ログイン状態をみた上で飛ばす先の画面をauthかdetailか判定したい
+/// まだうまく行ってない
   @override
   void initState() {
     super.initState();
-    String userId;
-    Future(() async {
-      userId = await _getUserId();
-    });
-    _initDynamicLinks(userId);
-    print('in initState');
-  }
 
-  void _initDynamicLinks(String userId) async {
+      FirebaseAuth.instance.authStateChanges().listen((User user) {
+      if (user == null) {
+        _loggedIn = false;
+      } else {
+        _loggedIn = true;
+      }
+    });
+      _controller.add(_loggedIn);
+//    _initDynamicLinks(_loggedIn);
+  }
+/*
+  void _initDynamicLinks(bool loggedIn) async {
     FirebaseDynamicLinks.instance.onLink(
         onSuccess: (PendingDynamicLinkData dynamicLink) async {
           final Uri deepLink = dynamicLink?.link;
@@ -43,98 +98,23 @@ class _HomeState extends State<Home> {
           if (deepLink != null) {
             String eventId = Map.from(map)['id'];
             String password = Map.from(map)['pass'];
-            QueryParameter queryParameter = new QueryParameter(
-                eventId: eventId, password: password);
-            if (userId == null) {
+            QueryParameter queryParameter =
+            new QueryParameter(eventId: eventId, password: password);
+            if (!loggedIn) {
               Navigator.pushNamed(context, '/auth', arguments: queryParameter);
             } else {
-              Navigator.pushNamed(
-                  context, '/schedule', arguments: queryParameter);
+              Navigator.pushNamed(context, '/schedule', arguments: queryParameter);
             }
           }
         }, onError: (OnLinkErrorException e) async {
       print(e.message);
     });
   }
+*/
 
-  @override
-  Widget build(BuildContext context) {
-    bool isConnecting = true;
-    bool hasData = false;
-
-    return FutureBuilder(
-        future: _getUserId(),
-        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            isConnecting = false;
-            if (snapshot.hasData) {
-              hasData = true;
-            }
-          }
-          isConnecting = false;
-//          hasData = true;
-          return new MyScaffold(isConnecting, hasData);
-        });
-  }
-
-  Future<String> _getUserId() async {
-    final Future<Database> database =
-        openDatabase(path.join(await getDatabasesPath(), 'onTime.db'));
-    final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('users');
-    return maps[0]['userId'];
-  }
 }
 
-class MyScaffold extends StatefulWidget {
-  final bool isConnecting;
-  final bool hasData;
-  MyScaffold(this.isConnecting, this.hasData);
-
-  @override
-  _MyScaffoldState createState() {
-    return _MyScaffoldState();
-  }
-}
-
-class _MyScaffoldState extends State<MyScaffold> {
-  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-    @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    return new Scaffold(
-        appBar: MyAppBar(_key),
-        body: Scaffold(
-          body: SafeArea(
-            child: EventCards(),
-          ),
-          floatingActionButton: widget.hasData
-              ?
-          Container()
-/*
-          FloatingActionButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/chat');
-                  },
-                  child: new Icon(Icons.chat))
- */
-
-              : Container(
-                  width: 0.7 * screenWidth,
-                  child: FloatingActionButton.extended(
-                      onPressed: () {
-//            Navigator.pushNamed(context, AuthPage().routeName,
-                      },
-                      label: Text('ログイン'))),
-          floatingActionButtonLocation:
-              widget.hasData ? null : FloatingActionButtonLocation.centerDocked,
-          drawerEdgeDragWidth: 0,
-          drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer()),
-          key: _key,
-        ));
-  }
-}
-
+/// イベント一覧
 class EventCards extends StatefulWidget {
   @override
   _EventCardsState createState() => _EventCardsState();
@@ -145,269 +125,81 @@ class _EventCardsState extends State<EventCards> {
 
   @override
   Widget build(BuildContext context) {
-    // Firebaseの初期化
-    return FutureBuilder(
-      future: Firebase.initializeApp(),
-      builder: (context, snapshot) {
-        // Firebaseの初期化エラー
-        if (snapshot.hasError) {
-          return Center(child: Text('エラーが発生しています'));
+    /// Firestoreからイベントリストを取得
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('events')
+
+          // 過去（1日以上前）のイベントは表示しない
+          .where('event_date',
+              isGreaterThan: DateTime.now().add(Duration(days: 1) * -1))
+//                isGreaterThan: DateTime.now().add(Duration(days: 10)))
+          .orderBy('event_date', descending: false)
+          .snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        // Firestoreからデータ取得する際のエラー
+        if (snapshot.hasError || !snapshot.hasData) {
+          return new Text('データを取得できませんでした');
         }
 
-        if (snapshot.connectionState == ConnectionState.done) {
-          // Firestoreからイベントリストを取得
-          return StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('events')
+        switch (snapshot.connectionState) {
+          // Firestoreに問い合わせ中の表示
+          case ConnectionState.waiting:
+            return Center(child: CircularProgressIndicator());
 
-                // 過去（1日以上前）のイベントは表示しない
-                .where('event_date',
-                    isGreaterThan: DateTime.now().add(Duration(days: 1) * -1))
-//                isGreaterThan: DateTime.now().add(Duration(days: 10)))
-                .orderBy('event_date', descending: false)
-                .snapshots(),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              // Firestoreからデータ取得する際のエラー
-              if (snapshot.hasError || !snapshot.hasData) {
-                return new Text('データを取得できませんでした');
-              }
+          default:
+            events = snapshot.data.docs;
 
-              switch (snapshot.connectionState) {
-                // Firestoreに問い合わせ中の表示
-                case ConnectionState.waiting:
-                  return Center(child: CircularProgressIndicator());
+            // 表示すべきイベントがない場合
+            if (events.isEmpty) {
+              return Center(child: Text('イベントが見つかりませんでした'));
+            }
 
-                default:
-                  events = snapshot.data.docs;
-
-                  // 表示すべきイベントがない場合
-                  if (events.isEmpty) {
-                    return Center(child: Text('イベントが見つかりませんでした'));
-                  }
-
-                  // 検索窓
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-                    child: SearchBar<DocumentSnapshot>(
-                      onSearch: search,
-                      suggestions: events,
-                      searchBarStyle: SearchBarStyle(
-                          backgroundColor: Colors.white,
+            // 検索窓
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+              child: SearchBar<DocumentSnapshot>(
+                onSearch: search,
+                suggestions: events,
+                searchBarStyle: SearchBarStyle(
+                    backgroundColor: Colors.white,
 /*                        padding: EdgeInsets.symmetric(
                           horizontal: 120.0
                         ),
 
  */
-                          borderRadius: BorderRadius.circular(10)),
-                      minimumChars: 1,
-                      cancellationWidget: Icon(Icons.cancel_outlined),
+                    borderRadius: BorderRadius.circular(10)),
+                minimumChars: 1,
+                cancellationWidget: Icon(Icons.cancel_outlined),
 //                      cancellationWidget: Text('キャンセル'),
-                      emptyWidget: Center(child: Text('一致するイベントはありません')),
-                      hintText: 'イベント名',
-                      hintStyle: TextStyle(fontSize: 20),
-                      onItemFound: (DocumentSnapshot event, int index) {
-                        // 検索結果
-                        Event event = new Event(
-                            id: events[index].reference.id,
-                            eventTitle: events[index].data()['event_title'],
-                            eventDate: events[index].data()['event_date'],
-                            eventDetails: events[index].data()['event_details']);
+                emptyWidget: Center(child: Text('一致するイベントはありません')),
+                hintText: 'イベント名',
+                hintStyle: TextStyle(fontSize: 20),
+                onItemFound: (DocumentSnapshot event, int index) {
+                  // 検索結果
+                  Event event = new Event(
+                      id: events[index].reference.id,
+                      eventTitle: events[index].data()['event_title'],
+                      eventDate: events[index].data()['event_date'],
+                      eventDetails: events[index].data()['event_details']);
 
-                        return EventCard(event: event, displayAll: true);
-/*
-                        DateTime eventDate =
-                            events[index]["event_date"].toDate();
-                        final double numberSize = 20.0;
-                        final double letterSize = 10.0;
-
-                        // 1イベント分のCard
-                        return Card(
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              // イベント名
-                              Row(children: [
-                                SpaceBox.width(30),
-                                Expanded(
-                                    child: ListTile(
-                                        title: Text(
-                                            events[index]["event_title"],
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 25,
-                                                color: Colors.grey[850])),
-
-                                        // 共有ボタン
-                                        trailing: IconButton(
-                                            icon: Icon(Icons.share),
-                                            onPressed: () {
-                                              Share.share(
-                                                  "Link to open this particular event in OnTime App");
-                                            }))),
-                              ]),
-
-                              // 開催日時
-                              Row(children: [
-                                SpaceBox.width(50),
-                                Text(
-                                  eventDate.year.toString(),
-                                  style: TextStyle(
-                                      fontSize: numberSize,
-                                      color: Colors.grey[800]),
-                                ),
-                                Text('年',
-                                    style: TextStyle(
-                                        fontSize: letterSize,
-                                        color: Colors.grey[800]),
-
-                                    // 異なる文字サイズを下揃えする
-                                    strutStyle: StrutStyle(
-                                      fontSize: numberSize,
-                                    )),
-                                Text(
-                                  eventDate.month.toString(),
-                                  style: TextStyle(
-                                      fontSize: numberSize,
-                                      color: Colors.grey[800]),
-                                ),
-                                Text('月',
-                                    style: TextStyle(
-                                        fontSize: letterSize,
-                                        color: Colors.grey[800]),
-                                    strutStyle: StrutStyle(
-                                      fontSize: numberSize,
-                                    )),
-                                Text(
-                                  eventDate.day.toString(),
-                                  style: TextStyle(
-                                      fontSize: numberSize,
-                                      color: Colors.grey[800]),
-                                ),
-                                Text('日',
-                                    style: TextStyle(
-                                        fontSize: letterSize,
-                                        color: Colors.grey[800]),
-                                    strutStyle: StrutStyle(
-                                      fontSize: numberSize,
-                                    )),
-                                SpaceBox.width(10),
-                                Text(
-                                  eventDate.hour.toString().padLeft(2, "0") +
-                                      ':' +
-                                      eventDate.minute
-                                          .toString()
-                                          .padLeft(2, "0"),
-                                  style: TextStyle(
-                                      fontSize: numberSize,
-                                      color: Colors.grey[800]),
-                                ),
-                                Text('JST',
-                                    style: TextStyle(
-                                        fontSize: letterSize,
-                                        color: Colors.grey[800]),
-                                    strutStyle: StrutStyle(
-                                      fontSize: numberSize,
-                                    )),
-                              ]),
-                              SpaceBox.height(10),
-
-                              // イベント画像
-                              FutureBuilder(
-                                  future: getURL(events[index].reference.id),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot<String> snapshot) {
-                                    // 画像URL取得中の表示
-                                    if (snapshot.connectionState !=
-                                        ConnectionState.done) {
-                                      return CircularProgressIndicator();
-                                    }
-
-                                    if (snapshot.hasData) {
-                                      return ConstrainedBox(
-                                          constraints:
-                                              BoxConstraints(maxHeight: 150),
-                                          child: Image.network(snapshot.data));
-                                    } else {
-                                      // 画像取得エラー
-                                      return Container();
-                                    }
-                                  }),
-                              SpaceBox.height(10),
-
-                              // イベント詳細
-                              Row(children: [
-                                SpaceBox.width(30),
-                                Expanded(
-                                  child: Text(events[index]["event_details"],
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 3, // 3行以上の説明文は省略表示
-                                      style:
-                                          TextStyle(color: Colors.grey[700])),
-                                ),
-                                SpaceBox.width(30)
-                              ]),
-                              SpaceBox.height(5),
-
-                              // 詳細ボタン
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  SizedBox(
-                                      width: 60,
-                                      child: RaisedButton(
-                                        child: const Text('詳細'),
-//                                        color: Colors.indigo[300],
-                                        color: Colors.blue,
-                                        textColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(3)),
-                                        onPressed: () {
-                                          /*
-                                        // スケジュール画面への遷移
-                                        Navigator.pushNamed(
-                                          context,
-                                          SchedulePage().routeName,
-
-                                        // eventsコレクションのドキュメントIDを渡す
-                                          arguments: events[index].reference.id
-                                        );
-                                        */
-                                        },
-                                      )),
-                                  SpaceBox.width(10)
-                                ],
-                              ),
-                              SpaceBox.height(5)
-                            ],
-                          ),
-                        );
- */
-                      },
-//                    itemCount: events.length + 1,
-                    ),
-                  );
-              }
-            },
-          );
+                  return EventCard(event: event, displayAll: true);
+                },
+              ),
+            );
         }
-        // Firebase初期化中の表示
-        return Center(child: CircularProgressIndicator());
       },
     );
   }
 
-  // 検索処理
+  /// 検索処理
   Future<List<DocumentSnapshot>> search(String search) async {
     return events
         .where((event) => event["event_title"].contains(search))
         .toList();
   }
 
-  // Cloud Storage URL取得
+  /// Cloud Storage URL取得
   Future<String> getURL(String documentID) async {
     final String downloadURL = await firebase_storage.FirebaseStorage.instance
         .ref('event_images/' + documentID + '.png')
@@ -415,73 +207,3 @@ class _EventCardsState extends State<EventCards> {
     return downloadURL;
   }
 }
-
-/*
-// マージン記述簡略化用Widget
-class SpaceBox extends SizedBox {
-  SpaceBox({double width = 8, double height = 8})
-      : super(width: width, height: height);
-
-  SpaceBox.width([double value = 8]) : super(width: value);
-  SpaceBox.height([double value = 8]) : super(height: value);
-}
-
- */
-
-/*
-class SearchBarDemoApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-        title: 'Search Bar Demo',
-        theme: new ThemeData(primarySwatch: Colors.blue),
-        home: new SearchBarDemoHome());
-  }
-}
-
-class SearchBarDemoHome extends StatefulWidget {
-  @override
-  _SearchBarDemoHomeState createState() => new _SearchBarDemoHomeState();
-}
-
-class _SearchBarDemoHomeState extends State<SearchBarDemoHome> {
-  SearchBar searchBar;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
-  AppBar buildAppBar(BuildContext context) {
-    return new AppBar(
-        title: new Text('OnTime'),
-        actions: [searchBar.getSearchAction(context)]);
-  }
-
-  void onSubmitted(String value) {
-    setState(() => _scaffoldKey.currentState
-        .showSnackBar(new SnackBar(content: new Text('You wrote $value!'))));
-  }
-
-  _SearchBarDemoHomeState() {
-    searchBar = new SearchBar(
-        inBar: false,
-        buildDefaultAppBar: buildAppBar,
-        setState: setState,
-        onSubmitted: onSubmitted,
-        onCleared: () {
-          print("cleared");
-        },
-        onClosed: () {
-          print("closed");
-        });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: searchBar.build(context),
-      key: _scaffoldKey,
-      body: new Center(
-          child: new Text("Don't look at me! Press the search button!")),
-    );
-  }
-}
-
- */

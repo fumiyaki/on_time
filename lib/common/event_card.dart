@@ -155,7 +155,7 @@ class _EventCardState extends State<EventCard> {
                               borderRadius: BorderRadius.circular(3)),
                           onPressed: () {
                             /// スケジュール画面への遷移
-                            Navigator.pushNamed(context, '/schedule',
+                            Navigator.pushNamed(context, '/detail',
                                 //// eventsコレクションのドキュメントIDを渡す
                                 arguments: event.id);
                           },

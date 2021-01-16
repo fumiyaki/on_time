@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:timelines/timelines.dart';
-
+import "../../common/drawer.dart";
 import "../../common/app_bar.dart";
 
 class _OrderInfo {
@@ -78,8 +78,10 @@ _OrderInfo _data(int id) => _OrderInfo(
 class detailPage extends StatelessWidget {
   final data = _data(1);
   GlobalKey<ScaffoldState> _key;
+  bool _loggedIn = true;
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         appBar: MyAppBar(_key),
         body: Scaffold(
@@ -162,7 +164,12 @@ class detailPage extends StatelessWidget {
                 processes: data.deliveryProcesses,
                 doing: data.complete,
                 startingdate: data.startdate,
-                nowtime: data.date)));
+                nowtime: data.date),
+          /// ドロワー
+          drawerEdgeDragWidth: 0,
+          drawer: SizedBox(
+              width: 0.8 * screenWidth, child: MyDrawer(login: _loggedIn)),
+          key: _key,));
   }
 }
 
