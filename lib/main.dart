@@ -12,8 +12,8 @@ import 'features/detail/detail.dart';
 import 'features/auth/auth.dart';
 import 'features/login.dart';
 import 'features/login_success.dart';
-import 'features/event_setup/widgets/event_setup.dart';
 import 'features/chat/chat.dart';
+import 'feature/edit/edit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +37,9 @@ class MyApp extends StatelessWidget {
         '/loggedIn': (context) => SomeScreen(),
         '/detail': (context) => detailPage(),
         '/setup': (context) => MyCustomForm(),
-        '/chat': (context) => MyHomePage()
+//        '/chat': (context) => MyHomePage(),
+        '/chat': (context) => ChatScreen(),
+        '/edit': (context) => EditPage()
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,

@@ -13,6 +13,7 @@ import 'package:uuid/uuid.dart';
 import "../../common/app_bar.dart";
 import "../../common/drawer.dart";
 
+/*
 class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -28,68 +29,71 @@ class _MyHomePageState extends State<MyHomePage> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: MyAppBar(_key),
-      body: Scaffold(body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                controller: _editingController,
-                decoration: InputDecoration(hintText: "Enter Name here..."),
-                validator: (val) {
-                  if (val.length < 3) {
-                    return "Name to short";
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(
-                height: 40.0,
-              ),
-              FlatButton(
-                child: Text("Next"),
-                onPressed: () async {
-                  if (_formKey.currentState.validate()) {
-                    print(_editingController.value.text);
-                    try {
-                      await FirebaseAuth.instance.signInAnonymously();
+        appBar: MyAppBar(_key),
+        body: Scaffold(
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    controller: _editingController,
+                    decoration: InputDecoration(hintText: "Enter Name here..."),
+                    validator: (val) {
+                      if (val.length < 3) {
+                        return "Name to short";
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 40.0,
+                  ),
+                  FlatButton(
+                    child: Text("Next"),
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        print(_editingController.value.text);
+                        try {
+                          await FirebaseAuth.instance.signInAnonymously();
 
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => ChatScreen(
-                            username: _editingController.text,
-                            uuid: Uuid().v4().toString(),
-                          ),
-                        ),
-                      );
-                    } catch (e) {
-                      print(e);
-                    }
-                  }
-                },
-              )
-            ],
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ChatScreen(
+                                username: _editingController.text,
+                                uuid: Uuid().v4().toString(),
+                              ),
+                            ),
+                          );
+                        } catch (e) {
+                          print(e);
+                        }
+                      }
+                    },
+                  )
+                ],
+              ),
+            ),
           ),
+          drawerEdgeDragWidth: 0,
+          drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer()),
+          key: _key,
         ),
-      ),
-        drawerEdgeDragWidth: 0,
-        drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer()),
-        key: _key,
-      ),
         //        drawerEdgeDragWidth: 0,
-        drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer())
-    );
+        drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer()));
   }
 }
+ */
+
 
 class ChatScreen extends StatefulWidget {
+/*
   final String username;
   final String uuid;
 
   ChatScreen({this.username, this.uuid});
-
+*/
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
@@ -97,6 +101,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   ChatUser user = ChatUser();
   final GlobalKey<DashChatState> _chatViewKey = GlobalKey<DashChatState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<ChatMessage> messages = List<ChatMessage>();
   var m = List<ChatMessage>();
 
@@ -104,8 +109,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
-    user.name = widget.username;
-    user.uid = widget.uuid;
+//    user.name = widget.username;
+//    user.uid = widget.uuid;
+      user.name = 'name';
+      user.uid = 'id';
     super.initState();
   }
 
@@ -185,10 +192,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Dash Chat"),
-      ),
+    double screenWidth = MediaQuery.of(context).size.width;
+    return SafeArea(child: Scaffold(
+      appBar: MyAppBar(_scaffoldKey),
+      body: new Scaffold(
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('messages').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -281,6 +288,12 @@ class _ChatScreenState extends State<ChatScreen> {
           }
         },
       ),
+        /// ドロワー
+        drawerEdgeDragWidth: 0,
+        drawer: SizedBox(
+            width: 0.8 * screenWidth, child: MyDrawer(login: true)),
+        key: _scaffoldKey,
+      ))
     );
   }
 }

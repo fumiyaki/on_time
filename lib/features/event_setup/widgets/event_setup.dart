@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import '../../../common/app_bar.dart';
 import '../../../common/drawer.dart';
+import '../../../common/event_card.dart';
 import '../../../entity/event.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
@@ -138,11 +139,14 @@ class MyCustomFormState extends State<MyCustomForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  DateDisplay(dateTime: EventDate.toLocal()),
+/*
                   Text(
                     //"${EventDate.toLocal()}".split(' ')[0],
                     "${EventDate.toLocal()}",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
+ */
                   SizedBox(height: 16.0,),
                   RaisedButton(
                     onPressed: () => _selectDate(context), // Refer step 3

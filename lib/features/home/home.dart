@@ -34,59 +34,58 @@ class _HomeState extends State<Home> {
     return new Scaffold(
         appBar: MyAppBar(_key),
         body: StreamBuilder(
-        stream: _controller.stream,
-        builder: (context, snapshot) {
+            stream: _controller.stream,
+            builder: (context, snapshot) {
+              /// AppBarを最前面にするためにScaffoldを二重に
+              return Scaffold(
+                body: SafeArea(
+                  child: EventCards(),
+                ),
 
-            /// AppBarを最前面にするためにScaffoldを二重に
-            return Scaffold(
-          body:
-          SafeArea(
-            child: EventCards(),
-          ),
+                /// 未ログイン時のみログインボタン表示
+                floatingActionButton: _loggedIn
+                    ? Container(width: 0, height: 0)
+                    : Container(
+                        width: 0.7 * screenWidth,
+                        child: FloatingActionButton.extended(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/auth')
+                                  .then((value) {
+                                setState(() {
+                                  print('back');
+                                });
+                              });
+                            },
+                            label: Text('ログイン'))),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerDocked,
 
-          /// 未ログイン時のみログインボタン表示
-          floatingActionButton: _loggedIn
-              ? Container(width: 0, height: 0)
-              : Container(
-                  width: 0.7 * screenWidth,
-                  child: FloatingActionButton.extended(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/auth').then((value) {
-                          setState(() {
-                            print('back');
-                          });
-                        });
-                      },
-                      label: Text('ログイン'))),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
-
-          /// ドロワー
-          drawerEdgeDragWidth: 0,
-          drawer: SizedBox(
-              width: 0.8 * screenWidth, child: MyDrawer(login: _loggedIn)),
-          key: _key,
-        );}
-            ));
+                /// ドロワー
+                drawerEdgeDragWidth: 0,
+                drawer: SizedBox(
+                    width: 0.8 * screenWidth,
+                    child: MyDrawer(login: _loggedIn)),
+                key: _key,
+              );
+            }));
   }
 
-
-/// Dynamic Link対応
-/// アプリインストール済みの場合の処理
-///　ログイン状態をみた上で飛ばす先の画面をauthかdetailか判定したい
-/// まだうまく行ってない
+  /// Dynamic Link対応
+  /// アプリインストール済みの場合の処理
+  ///　ログイン状態をみた上で飛ばす先の画面をauthかdetailか判定したい
+  /// まだうまく行ってない
   @override
   void initState() {
     super.initState();
 
-      FirebaseAuth.instance.authStateChanges().listen((User user) {
+    FirebaseAuth.instance.authStateChanges().listen((User user) {
       if (user == null) {
         _loggedIn = false;
       } else {
         _loggedIn = true;
       }
     });
-      _controller.add(_loggedIn);
+    _controller.add(_loggedIn);
 //    _initDynamicLinks(_loggedIn);
   }
 /*
@@ -139,7 +138,7 @@ class _EventCardsState extends State<EventCards> {
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         // Firestoreからデータ取得する際のエラー
         if (snapshot.hasError || !snapshot.hasData) {
-          return new Text('データを取得できませんでした');
+          return Center(child: Text('データを取得できませんでした'));
         }
 
         switch (snapshot.connectionState) {

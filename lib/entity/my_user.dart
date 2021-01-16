@@ -4,5 +4,5 @@ class MyUser {
       String id;
       List<String> editableEvents;
       Timestamp lastSync;
-      MyUser(this.id, this.editableEvents, this.lastSync);
+      MyUser({this.id, this.editableEvents, this.lastSync});
 }

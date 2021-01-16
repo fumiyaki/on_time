@@ -54,50 +54,7 @@ class _EventCardState extends State<EventCard> {
           ]),
 
           // 開催日時
-          Row(children: [
-            SpaceBox.width(50),
-            Text(
-              eventDate.year.toString(),
-              style: TextStyle(fontSize: numberSize, color: Colors.grey[800]),
-            ),
-            Text('年',
-                style: TextStyle(fontSize: letterSize, color: Colors.grey[800]),
-
-                // 異なる文字サイズを下揃えする
-                strutStyle: StrutStyle(
-                  fontSize: numberSize,
-                )),
-            Text(
-              eventDate.month.toString(),
-              style: TextStyle(fontSize: numberSize, color: Colors.grey[800]),
-            ),
-            Text('月',
-                style: TextStyle(fontSize: letterSize, color: Colors.grey[800]),
-                strutStyle: StrutStyle(
-                  fontSize: numberSize,
-                )),
-            Text(
-              eventDate.day.toString(),
-              style: TextStyle(fontSize: numberSize, color: Colors.grey[800]),
-            ),
-            Text('日',
-                style: TextStyle(fontSize: letterSize, color: Colors.grey[800]),
-                strutStyle: StrutStyle(
-                  fontSize: numberSize,
-                )),
-            SpaceBox.width(10),
-            Text(
-              eventDate.hour.toString().padLeft(2, "0") +
-                  ':' +
-                  eventDate.minute.toString().padLeft(2, "0"),
-              style: TextStyle(fontSize: numberSize, color: Colors.grey[800]),
-            ),
-            Text('JST',
-                style: TextStyle(fontSize: letterSize, color: Colors.grey[800]),
-                strutStyle: StrutStyle(
-                  fontSize: numberSize,
-                )),
-          ]),
+          DateDisplay(dateTime: eventDate),
           SpaceBox.height(10),
 
           Visibility(
@@ -176,5 +133,65 @@ class _EventCardState extends State<EventCard> {
         .ref('event_images/' + documentID + '.png')
         .getDownloadURL();
     return downloadURL;
+  }
+}
+
+class DateDisplay extends StatefulWidget {
+  DateTime dateTime;
+  DateDisplay({this.dateTime});
+  @override
+  _DateDisplayState createState() => _DateDisplayState();
+}
+
+class _DateDisplayState extends State<DateDisplay> {
+
+  @override
+  Widget build(BuildContext context) {
+    final double numberSize = 20.0;
+    final double letterSize = 10.0;
+    return Row(children: [
+      SpaceBox.width(50),
+      Text(
+        widget.dateTime.year.toString(),
+        style: TextStyle(fontSize: numberSize, color: Colors.grey[800]),
+      ),
+      Text('年',
+          style: TextStyle(fontSize: letterSize, color: Colors.grey[800]),
+
+// 異なる文字サイズを下揃えする
+          strutStyle: StrutStyle(
+            fontSize: numberSize,
+          )),
+      Text(
+        widget.dateTime.month.toString(),
+        style: TextStyle(fontSize: numberSize, color: Colors.grey[800]),
+      ),
+      Text('月',
+          style: TextStyle(fontSize: letterSize, color: Colors.grey[800]),
+          strutStyle: StrutStyle(
+            fontSize: numberSize,
+          )),
+      Text(
+        widget.dateTime.day.toString(),
+        style: TextStyle(fontSize: numberSize, color: Colors.grey[800]),
+      ),
+      Text('日',
+          style: TextStyle(fontSize: letterSize, color: Colors.grey[800]),
+          strutStyle: StrutStyle(
+            fontSize: numberSize,
+          )),
+      SpaceBox.width(10),
+      Text(
+        widget.dateTime.hour.toString().padLeft(2, "0") +
+            ':' +
+            widget.dateTime.minute.toString().padLeft(2, "0"),
+        style: TextStyle(fontSize: numberSize, color: Colors.grey[800]),
+      ),
+      Text('JST',
+          style: TextStyle(fontSize: letterSize, color: Colors.grey[800]),
+          strutStyle: StrutStyle(
+            fontSize: numberSize,
+          )),
+    ]);
   }
 }
