@@ -23,8 +23,8 @@ class _DragIntoListExample extends State<DragIntoListExample> {
 
   final EventList = TextEditingController();
   final EventTask = TextEditingController();
-  String SessionTime = '1';
-  String ItemTime ='1';
+  String SessionTime;
+  String ItemTime;
 
     @override
     Widget build(BuildContext context) {
@@ -116,28 +116,29 @@ class _DragIntoListExample extends State<DragIntoListExample> {
                                               },
                                             ),
                                           ),
-                                          DropdownButton<String>(
+                                          new DropdownButton<String>(
                                             value: SessionTime,
                                             hint: Text('分'),
                                             underline: Container(
                                               height: 2,
+                                              width: 10,
                                               color: Colors.blue,
                                             ),
-                                            onChanged: (String newValue) {
-                                              setState(() {
-                                                SessionTime = newValue;
-                                              });
-                                            },
-                                            items: <String>[
-                                              '1','2','3','4','5'
-                                            ].map<DropdownMenuItem<String>>((String value) {
-                                              return DropdownMenuItem<String>(
+                                            items: <String>['1', '2', '3', '4']
+                                                .map<DropdownMenuItem<String>>((String value) {
+                                              return new DropdownMenuItem<String>(
                                                 value: value,
-                                                child: Text(value),
+                                                child: new Text(value),
                                               );
                                             }).toList(),
-                                          ),
-                                        ],
+                                            onChanged: (String changedValue) {
+                                              SessionTime=changedValue;
+                                              setState(() {
+                                                SessionTime;
+                                                print(SessionTime);
+                                              });
+                                            },
+                                          )],
                                       ))),
                               ],
                             ),
@@ -186,21 +187,22 @@ class _DragIntoListExample extends State<DragIntoListExample> {
                                                     height: 2,
                                                     color: Colors.blue,
                                                   ),
-                                                  onChanged: (String newValue) {
+                                                  onChanged: (String changedValue) {
+                                                    ItemTime=changedValue;
                                                     setState(() {
-                                                      ItemTime = newValue;
+                                                      ItemTime;
+                                                      print(ItemTime);
                                                     });
                                                   },
-                                                  items: <String>[
-                                                    '1','2','3','4','5'
-                                                  ].map<DropdownMenuItem<String>>((String value) {
-                                                    return DropdownMenuItem<String>(
-                                                      value: value,
-                                                      child: Text(value),
-                                                    );
-                                                  }).toList(),
-                                                ),
-                                              ],
+                                            items: <String>['1', '2', '3', '4']
+                                                .map<DropdownMenuItem<String>>((String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            })
+                                                .toList(),
+                                          )],
                                             ))),
                               ],
                             ),
