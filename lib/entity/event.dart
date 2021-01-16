@@ -5,10 +5,12 @@ class Event {
   String eventTitle;
   Timestamp eventDate;
   String eventDetails;
-  Uri viewerURL;
   String password;
+  Uri viewerURL;
+  Uri editorURL;
 
-  Event({this.id, this.eventTitle, this.eventDate, this.eventDetails, this.viewerURL, this.password});
+
+  Event({this.id, this.eventTitle, this.eventDate, this.eventDetails, this.password, this.viewerURL, this.editorURL});
 
   Map<String, dynamic> toMap() {
     return {

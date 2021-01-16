@@ -8,7 +8,7 @@ import 'common/auth_model.dart';
 import 'features/event_setup/widgets/event_setup.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'features/home/home.dart';
-import 'features/schedule/schedule.dart';
+import 'features/detail/detail.dart';
 import 'features/auth/auth.dart';
 import 'features/login.dart';
 import 'features/login_success.dart';
@@ -24,23 +24,26 @@ Future<void> main() async {
 
 /// This is the main application widget.
 class MyApp extends StatelessWidget {
-  static const String _title = 'OnTime';
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: _title,
+      title: 'onTime',
       initialRoute: '/',
       routes: <String, WidgetBuilder> {
         '/': (context) => Home(),
-//        '/': (context) => SomeScreen(),
         '/auth': (context) => auth(),
         '/login': (context) => AuthScreen(),
         '/loggedIn': (context) => SomeScreen(),
-//        '/schedule': (context) => SchedulePage(),
+        '/detail': (context) => detailPage(),
         '/setup': (context) => MyCustomForm(),
         '/chat': (context) => MyHomePage()
-      }
+      },
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      debugShowCheckedModeBanner: false
     );
   }
 }

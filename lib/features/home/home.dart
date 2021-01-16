@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
@@ -111,7 +114,7 @@ class _HomeState extends State<Home> {
 
 }
 
-/// イベント一覧の部分
+/// イベント一覧
 class EventCards extends StatefulWidget {
   @override
   _EventCardsState createState() => _EventCardsState();

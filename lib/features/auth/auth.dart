@@ -89,7 +89,7 @@ class auth extends StatelessWidget {
                         onPressed: () {
                           try {
                             final userCredential = signInWithGoogle();
-                            Navigator.pushNamed(context, '/loggedIn');
+                            Navigator.pushNamed(context, '/detail');
                           } on FirebaseAuthException catch (e) {
                             print('FirebaseAuthException');
                             print('${e.code}');

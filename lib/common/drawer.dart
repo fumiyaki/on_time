@@ -118,13 +118,17 @@ class _EditableEventsState extends State<EditableEvents> {
                   itemCount: editableEvents.length,
                   itemBuilder: (BuildContext context, int index) {
 //                    print(editableEvents[index].title);
-                    return EventCard(
+                    return GestureDetector(
+                        child: EventCard(
                         event: Event(
                             id: editableEvents[index].id,
                             eventTitle: editableEvents[index].title,
                             eventDate: editableEvents[index].date,
                             eventDetails: ''),
-                        displayAll: false);
+                        displayAll: false),
+                    onTap: () {
+                          Navigator.pushNamed(context, '/detail');
+                    });
                   },
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
