@@ -209,7 +209,7 @@ class EditPage extends StatelessWidget {
                             ),
                             FlatButton(
                                 onPressed: () {
-                                  DatePicker.showDatePicker(context,
+                                  DatePicker.showDateTimePicker(context,
                                       showTitleActions: true,
                                       minTime: DateTime(2020, 1, 1),
                                       maxTime: DateTime(2025, 12, 31), onChanged: (date) {
