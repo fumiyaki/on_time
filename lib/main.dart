@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-//import 'feature/detail/detail.dart';
-import 'package:ontime/feature/edit/edit.dart';
+import 'package:ontime/feature/home/home.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(new SearchBarDemoApp());
 }
