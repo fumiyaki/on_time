@@ -2,11 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
+import 'package:flutter_search_bar/flutter_search_bar.dart';
+import 'package:ontime/features/detail/detail.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:ontime/features/detail/detail.dart';
 import "../../entity/event.dart";
 import "../../entity/query_parameter.dart";
 import "../../common/app_bar.dart";
@@ -430,7 +433,7 @@ class SearchBarDemoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        title: 'OnTime',
+        title: 'Search Bar Demo',
         theme: new ThemeData(primarySwatch: Colors.blue),
         home: new SearchBarDemoHome());
   }

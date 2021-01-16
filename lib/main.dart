@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:flutter/material.dart';
+
 import 'features/event_setup/widgets/event_setup.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'features/home/home.dart';
@@ -49,4 +50,3 @@ void dynamicLinksHandlerNonInstall() async {
   final Uri deepLink = data?.link;
   /// do something...
 }
-

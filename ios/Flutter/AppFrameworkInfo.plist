@@ -22,11 +22,5 @@
   <string>1.0</string>
   <key>MinimumOSVersion</key>
   <string>9.0</string>
-  <key>NSPhotoLibraryUsageDescription</key>
-  <string>Allow access to photo library</string>
-  <key>NSCameraUsageDescription</key>
-  <string>Allow access to camera to capture photos</string>
-  <key>NSMicrophoneUsageDescription</key>
-  <string>Allow access to microphone</string>
 </dict>
 </plist>
