@@ -28,8 +28,8 @@ class _MyDrawerState extends State<MyDrawer> {
                 if (snapshot.connectionState != ConnectionState.done) {
                   return CircularProgressIndicator();
                 }
-
-                return getCreateEventCard(snapshot.hasData);
+                return CreateEventCard(true);
+//                return CreateEventCard(snapshot.hasData);
               }),
 
           SpaceBox.height(50),
@@ -41,8 +41,23 @@ class _MyDrawerState extends State<MyDrawer> {
         ]));
   }
 
-  //
-  Card getCreateEventCard(bool hasData) {
+  // ログイン中かどうかを判定
+  Future<String> _getUserId() async {
+    final Future<Database> database =
+        openDatabase(join(await getDatabasesPath(), 'onTime.db'));
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('users');
+    return maps[0]['userId'];
+  }
+}
+
+//
+class CreateEventCard extends StatelessWidget {
+  final bool hasData;
+  CreateEventCard(this.hasData);
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
         margin: EdgeInsets.symmetric(horizontal: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -51,38 +66,21 @@ class _MyDrawerState extends State<MyDrawer> {
             child: ListTile(
                 title: Text('新しいイベントを設定', style: TextStyle(fontSize: 16)),
 
-                // 鉛筆ボタン
+                /// 鉛筆ボタン
                 trailing: IconButton(
                     icon: Icon(Icons.create_rounded, color: Colors.indigo[300]),
                     onPressed: () {
                       if (hasData) {
-                        /*
-                Navigator.pushNamed(
-                    context,
-                    DetailEditorPage().routeName,
-
-                    // ユーザー情報を渡す
-                    arguments: user
-                )
-                */
+                        Navigator.pushNamed(context, '/setup');
                       } else {
                         /*
-                Navigator.pushNamed(
+                  Navigator.pushNamed(
                     context,
                     AuthPage().routeName,
                 );
                  */
                       }
                     }))));
-  }
-
-  // ログイン中かどうかを判定
-  Future<String> _getUserId() async {
-    final Future<Database> database =
-        openDatabase(join(await getDatabasesPath(), 'onTime.db'));
-    final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('users');
-    return maps[0]['userId'];
   }
 }
 
@@ -108,19 +106,21 @@ class _EditableEventsState extends State<EditableEvents> {
             return Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: ListView.builder(
-                itemCount: editableEvents.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return EventCard(
-                      event: Event(
-                          editableEvents[index].id,
-                          editableEvents[index].title,
-                          editableEvents[index].date,
-                          ''),
-                      displayAll: false);
-                },
+                  itemCount: editableEvents.length,
+                  itemBuilder: (BuildContext context, int index) {
+//                    print(editableEvents[index].title);
+                    return EventCard(
+                        event: Event(
+                            id: editableEvents[index].id,
+                            eventTitle: editableEvents[index].title,
+                            eventDate: editableEvents[index].date,
+                            eventDetails: ''
+                            ),
+                        displayAll: false);
+                  },
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),)
-            );
+                  physics: NeverScrollableScrollPhysics(),
+                ));
           } else {
             return Container();
           }
@@ -132,10 +132,10 @@ class _EditableEventsState extends State<EditableEvents> {
 
     /// テスト用の暫定コード　ここから
     EditableEvent event = new EditableEvent(
-        id: 'abcde', title: 'タイトル', date: Timestamp.fromDate(DateTime.now())
-    );
+        id: 'abcde', title: 'タイトル', date: Timestamp.fromDate(DateTime.now()));
     eventList.add(event);
     return eventList;
+
     /// ここまで
 /*
     final Future<Database> database =
