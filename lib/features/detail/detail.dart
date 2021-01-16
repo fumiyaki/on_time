@@ -4,8 +4,6 @@ import 'package:timelines/timelines.dart';
 
 import "../../common/app_bar.dart";
 
-const kTileHeight = 64.0;
-
 class _OrderInfo {
   const _OrderInfo({
     @required this.date,
@@ -62,6 +60,8 @@ _OrderInfo _data(int id) => _OrderInfo(
           messages: [
             _DeliveryMessage(32, 'Event D Team', false),
             _DeliveryMessage(16, 'Event E Team', false),
+            _DeliveryMessage(16, 'Event E Team', false),
+            _DeliveryMessage(16, 'Event E Team', false),
           ],
         ),
         _DeliveryProcess(
@@ -74,6 +74,8 @@ _OrderInfo _data(int id) => _OrderInfo(
         ),
       ],
     );
+
+List<bool> check_box = List.filled(10, false);
 
 class detailPage extends StatelessWidget {
   final data = _data(1);
@@ -154,7 +156,7 @@ class detailPage extends StatelessWidget {
                     ),
                     IconButton(
                         icon: Icon(Icons.share),
-                        // onPressed: () => _key.currentState.openDrawer(),
+                        //    onPressed: () => Navigator.pop(context, "SearchBarDemoApp"),
                         color: Colors.grey[800]),
                   ],
                 )),
@@ -166,7 +168,7 @@ class detailPage extends StatelessWidget {
   }
 }
 
-class _InnerTimeline extends StatelessWidget {
+class _InnerTimeline extends StatefulWidget {
   const _InnerTimeline({
     @required this.messages,
     @required this.startingdate,
@@ -176,10 +178,16 @@ class _InnerTimeline extends StatelessWidget {
   final List<_DeliveryMessage> messages;
   final DateTime startingdate;
   final DateTime nowtime;
+
+  @override
+  __InnerTimelineState createState() => __InnerTimelineState();
+}
+
+class __InnerTimelineState extends State<_InnerTimeline> {
   @override
   Widget build(BuildContext context) {
     bool isEdgeIndex(int index) {
-      return index == 0 || index == messages.length + 1;
+      return index == 0 || index == widget.messages.length + 1;
     }
 
     return Padding(
@@ -188,7 +196,9 @@ class _InnerTimeline extends StatelessWidget {
         theme: TimelineTheme.of(context).copyWith(
           nodePosition: 0,
           connectorTheme: TimelineTheme.of(context).connectorTheme.copyWith(
-                thickness: 1.0,
+                thickness: 3.0,
+                space: 8.0,
+                indent: 2.0,
               ),
           indicatorTheme: TimelineTheme.of(context).indicatorTheme.copyWith(
                 size: 10.0,
@@ -198,16 +208,23 @@ class _InnerTimeline extends StatelessWidget {
         builder: TimelineTileBuilder(
           indicatorBuilder: (_, index) => !isEdgeIndex(index)
               ? ContainerIndicator(
-                  child: Container(
-                    child: Checkbox(
-                      activeColor: Colors.blue,
-                      value: messages[index - 1].checkbox,
-                      //    onChanged: messages[index - 1].checkbox?messages[index - 1].checkbox = false;messages[index - 1].checkbox =true,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
+                    child: Container(
+                      child: Checkbox(
+                        activeColor: Colors.blue,
+                        value: check_box[index],
+                        //      onChanged: check_box[index]?check_box[index] = false : check_box[index] = true,
+                      ),
                     ),
                   ),
                 )
               : null,
-          startConnectorBuilder: (_, index) => Connector.solidLine(),
+          startConnectorBuilder: (_, index) => SizedBox(
+            height: 40.0,
+            width: 16.0,
+            child: SolidLineConnector(),
+          ),
           endConnectorBuilder: (_, index) => Connector.solidLine(),
           contentsBuilder: (_, index) {
             if (isEdgeIndex(index)) {
@@ -215,7 +232,7 @@ class _InnerTimeline extends StatelessWidget {
             }
             int sumtime = 0;
             if (index > 1) {
-              sumtime = sumtime + messages[index - 2].contenttime;
+              sumtime = sumtime + widget.messages[index - 2].contenttime;
             }
             // ;
 
@@ -229,18 +246,18 @@ class _InnerTimeline extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
                         child: Text(
-                            DateFormat('HH:mm').format(
-                                startingdate.add(Duration(minutes: sumtime))),
+                            DateFormat('HH:mm').format(widget.startingdate
+                                .add(Duration(minutes: sumtime))),
                             style: TextStyle(
                               fontSize: 16,
                             )),
                       ),
-                      Text(messages[index - 1].message),
+                      Text(widget.messages[index - 1].message),
                     ],
                   ),
                   Row(
                     children: [
-                      Text(messages[index - 1].contenttime.toString(),
+                      Text(widget.messages[index - 1].contenttime.toString(),
                           style: TextStyle(
                             fontSize: 16,
                           )),
@@ -254,10 +271,10 @@ class _InnerTimeline extends StatelessWidget {
               ),
             );
           },
-          itemExtentBuilder: (_, index) => isEdgeIndex(index) ? 10.0 : 30.0,
+          itemExtentBuilder: (_, index) => isEdgeIndex(index) ? 10.0 : 56.0,
           nodeItemOverlapBuilder: (_, index) =>
               isEdgeIndex(index) ? true : null,
-          itemCount: messages.length + 2,
+          itemCount: widget.messages.length + 2,
         ),
       ),
     );
@@ -285,99 +302,101 @@ class _DeliveryProcesses extends StatelessWidget {
         color: Color(0xff9b9b9b),
         fontSize: 12.5,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: FixedTimeline.tileBuilder(
-          theme: TimelineThemeData(
-            nodePosition: 0,
-            color: Color(0xff989898),
-            indicatorTheme: IndicatorThemeData(
-              position: 0,
-              size: 20.0,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: FixedTimeline.tileBuilder(
+            theme: TimelineThemeData(
+              nodePosition: 0,
+              color: Color(0xff989898),
+              indicatorTheme: IndicatorThemeData(
+                position: 0,
+                size: 20.0,
+              ),
+              connectorTheme: ConnectorThemeData(
+                thickness: 2.5,
+              ),
             ),
-            connectorTheme: ConnectorThemeData(
-              thickness: 2.5,
-            ),
-          ),
-          builder: TimelineTileBuilder.connected(
-            connectionDirection: ConnectionDirection.before,
-            itemCount: processes.length,
-            contentsBuilder: (_, index) {
-              int bigsumtime = 0;
-              bigsumtime = bigsumtime + processes[index].time;
-              print(bigsumtime);
-              startingdateCh =
-                  startingdateCh.add(Duration(minutes: bigsumtime));
-              return Padding(
-                padding: EdgeInsets.only(left: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
-                              child: Text(
-                                  DateFormat('HH:mm').format(startingdateCh),
+            builder: TimelineTileBuilder.connected(
+              connectionDirection: ConnectionDirection.before,
+              itemCount: processes.length,
+              contentsBuilder: (_, index) {
+                int bigsumtime = 0;
+                bigsumtime = bigsumtime + processes[index].time;
+                print(bigsumtime);
+                startingdateCh =
+                    startingdateCh.add(Duration(minutes: bigsumtime));
+                return Padding(
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
+                                child: Text(
+                                    DateFormat('HH:mm').format(startingdateCh),
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.black,
+                                    )),
+                              ),
+                              Text(
+                                processes[index].name,
+                                style:
+                                    DefaultTextStyle.of(context).style.copyWith(
+                                          fontSize: 18.0,
+                                        ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text(processes[index].time.toString(),
                                   style: TextStyle(
                                     fontSize: 24,
-                                    color: Colors.black,
                                   )),
-                            ),
-                            Text(
-                              processes[index].name,
-                              style:
-                                  DefaultTextStyle.of(context).style.copyWith(
-                                        fontSize: 18.0,
-                                      ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text(processes[index].time.toString(),
-                                style: TextStyle(
-                                  fontSize: 24,
-                                )),
-                            Text("分",
-                                style: TextStyle(
-                                  fontSize: 10,
-                                ))
-                          ],
-                        )
-                      ],
-                    ),
-                    _InnerTimeline(
-                        messages: processes[index].messages,
-                        startingdate: startingdateCh,
-                        nowtime: nowtime),
-                  ],
-                ),
-              );
-            },
-            indicatorBuilder: (_, index) {
-              if (doing >= index) {
-                print(index);
-                return DotIndicator(
-                  color: Color(0xff66c97f),
-                  child: Icon(
-                    Icons.check,
-                    color: Colors.white,
-                    size: 12.0,
+                              Text("分",
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ))
+                            ],
+                          )
+                        ],
+                      ),
+                      _InnerTimeline(
+                          messages: processes[index].messages,
+                          startingdate: startingdateCh,
+                          nowtime: nowtime),
+                    ],
                   ),
                 );
-              } else {
-                return OutlinedDotIndicator(
-                  borderWidth: 2.5,
-                );
-              }
-            },
-            connectorBuilder: (_, index, ___) => SolidLineConnector(
-              color: doing >= index ? Color(0xff66c97f) : null,
+              },
+              indicatorBuilder: (_, index) {
+                if (doing >= index) {
+                  print(index);
+                  return DotIndicator(
+                    color: Color(0xff66c97f),
+                    child: Icon(
+                      Icons.check,
+                      color: Colors.white,
+                      size: 12.0,
+                    ),
+                  );
+                } else {
+                  return OutlinedDotIndicator(
+                    borderWidth: 2.5,
+                  );
+                }
+              },
+              connectorBuilder: (_, index, ___) => SolidLineConnector(
+                color: doing >= index ? Color(0xff66c97f) : null,
+              ),
             ),
           ),
         ),
