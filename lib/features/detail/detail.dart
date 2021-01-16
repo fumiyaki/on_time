@@ -92,7 +92,7 @@ class detailPage extends StatelessWidget {
                 children: [
                   IconButton(
                       icon: Icon(Icons.brush_sharp),
-                      onPressed: () => Navigator.pushNamed(context, '/edit'),
+                      onPressed: () => Navigator.pushNamed(context, '/edit'),//, arguments: argument),
                         color: Colors.grey[800]),
                         Padding(
                         padding: const EdgeInsets.fromLTRB(0, 8, 0, 2),

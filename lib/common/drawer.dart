@@ -5,7 +5,9 @@ import 'package:sqflite/sqflite.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../entity/editable_event.dart';
+import '../entity/my_user.dart';
 import '../entity/event.dart';
+import '../entity/argument.dart';
 import '../common/event_card.dart';
 import 'space_box.dart';
 
@@ -54,15 +56,6 @@ class _MyDrawerState extends State<MyDrawer> {
           )
         ]));
   }
-
-  // ログイン中かどうかを判定
-  Future<String> _getUserId() async {
-    final Future<Database> database =
-        openDatabase(join(await getDatabasesPath(), 'onTime.db'));
-    final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('users');
-    return maps[0]['userId'];
-  }
 }
 
 //
@@ -72,6 +65,25 @@ class CreateEventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String userId;
+    /*
+    if (hasData) {
+        userId = FutureBuilder(
+          future: getUserId(),
+          builder: (BuildContext context,
+              AsyncSnapshot<String> snapshot) {
+            if (snapshot.hasData) {
+              return snapshot.data;
+            } else {
+              return null;
+            }
+          });
+    }
+
+     */
+
+    MyUser user = new MyUser(id: userId);
+//    Argument argument = new Argument(MyUser: user);
     return Card(
         margin: EdgeInsets.symmetric(horizontal: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -85,11 +97,20 @@ class CreateEventCard extends StatelessWidget {
                     icon: Icon(Icons.create_rounded, color: Colors.indigo[300]),
                     onPressed: () {
                       if (hasData) {
-                        Navigator.pushNamed(context, '/setup');
+                        Navigator.pushNamed(context, '/setup');//, arguments: argument);
                       } else {
                         Navigator.pushNamed(context, '/auth');
                       }
                     }))));
+  }
+
+  /// ユーザーIDを取得
+  Future<String> _getUserId() async {
+    final Future<Database> database =
+    openDatabase(join(await getDatabasesPath(), 'onTime.db'));
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('users');
+    return maps[0]['userId'];
   }
 }
 

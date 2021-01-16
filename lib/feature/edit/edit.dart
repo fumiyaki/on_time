@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:timelines/timelines.dart';
 import '../../common/app_bar.dart';
 import '../../common/drawer.dart';
+import '../../entity/argument.dart';
+import '../../entity/event.dart';
 
 const kTileHeight = 64.0;
 
@@ -74,12 +76,25 @@ _OrderInfo _data(int id) => _OrderInfo(
   ],
 );
 
-class EditPage extends StatelessWidget {
+class EditPage extends StatefulWidget {
+  @override
+  _EditPageState createState() => _EditPageState();
+}
+
+class _EditPageState extends State<EditPage> {
+  Argument argument;
   final data = _data(1);
   GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    Argument argument = ModalRoute.of(context).settings.arguments;
+
+    /// temporary
+    Event event = new Event(eventTitle: 'タイトル', viewerURL: Uri.parse('url.for.viewer'), editorURL: Uri.parse('url.for.editor'));
+    argument = new Argument(event: event);
+
     return Scaffold(
         appBar: MyAppBar(_key),
         body: new Scaffold(
@@ -93,8 +108,7 @@ class EditPage extends StatelessWidget {
                         children:<Widget>[
                           Center(
                             child:
-                            new Text(
-                              "Firebaseハッカソン",
+                            new Text(argument.event.eventTitle,
                               style: new TextStyle(fontSize:30.0,
                                   color: const Color(0xFF000000),
                                   fontWeight: FontWeight.w500,
@@ -128,8 +142,7 @@ class EditPage extends StatelessWidget {
                           //SpaceBox.width(30),
                           Column(
                               children:<Widget>[
-                                Text(
-                                  "aaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                                Text(argument.event.viewerURL.toString(),
                                   style: new TextStyle(fontSize:18.0,
                                       color: const Color(0xFF000000),
                                       fontWeight: FontWeight.w200,
@@ -178,8 +191,7 @@ class EditPage extends StatelessWidget {
                           //SpaceBox.width(30),
                           Column(
                               children:<Widget>[
-                                Text(
-                                  "aaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                                Text(argument.event.editorURL.toString(),
                                   style: new TextStyle(fontSize:18.0,
                                       color: const Color(0xFF000000),
                                       decoration: TextDecoration.underline,
