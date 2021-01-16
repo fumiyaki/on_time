@@ -32,10 +32,11 @@ class _DeliveryProcess {
 
 //こ要素
 class _DeliveryMessage {
-  const _DeliveryMessage(this.contenttime, this.message);
+  const _DeliveryMessage(this.contenttime, this.message, this.checkbox);
 
   final int contenttime; // final DateTime createdAt;
   final String message;
+  final bool checkbox;
 }
 
 _OrderInfo _data(int id) => _OrderInfo(
@@ -48,25 +49,25 @@ _OrderInfo _data(int id) => _OrderInfo(
           '発表会',
           60,
           messages: [
-            _DeliveryMessage(6, 'Event A Team'),
-            _DeliveryMessage(12, 'Event B Team'),
-            _DeliveryMessage(25, 'Event C Team'),
+            _DeliveryMessage(6, 'Event A Team', false),
+            _DeliveryMessage(12, 'Event B Team', false),
+            _DeliveryMessage(25, 'Event C Team', false),
           ],
         ),
         _DeliveryProcess(
           '休憩',
           60,
           messages: [
-            _DeliveryMessage(32, 'Event D Team'),
-            _DeliveryMessage(16, 'Event E Team'),
+            _DeliveryMessage(32, 'Event D Team', false),
+            _DeliveryMessage(16, 'Event E Team', false),
           ],
         ),
         _DeliveryProcess(
           '休憩',
           60,
           messages: [
-            _DeliveryMessage(32, 'Event D Team'),
-            _DeliveryMessage(16, 'Event E Team'),
+            _DeliveryMessage(32, 'Event D Team', false),
+            _DeliveryMessage(16, 'Event E Team', false),
           ],
         ),
       ],
@@ -118,8 +119,17 @@ class _InnerTimeline extends StatelessWidget {
               ),
         ),
         builder: TimelineTileBuilder(
-          indicatorBuilder: (_, index) =>
-              !isEdgeIndex(index) ? Indicator.outlined(borderWidth: 1.0) : null,
+          indicatorBuilder: (_, index) => !isEdgeIndex(index)
+              ? ContainerIndicator(
+                  child: Container(
+                    child: Checkbox(
+                      activeColor: Colors.blue,
+                      value: messages[index - 1].checkbox,
+                      //    onChanged: messages[index - 1].checkbox?messages[index - 1].checkbox = false;messages[index - 1].checkbox =true,
+                    ),
+                  ),
+                )
+              : null,
           startConnectorBuilder: (_, index) => Connector.solidLine(),
           endConnectorBuilder: (_, index) => Connector.solidLine(),
           contentsBuilder: (_, index) {
@@ -127,7 +137,9 @@ class _InnerTimeline extends StatelessWidget {
               return null;
             }
             int sumtime = 0;
-            sumtime = sumtime + messages[index - 1].contenttime;
+            if (index > 1) {
+              sumtime = sumtime + messages[index - 2].contenttime;
+            }
             // ;
 
             return Padding(
