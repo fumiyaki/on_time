@@ -46,13 +46,28 @@ dependencies:
   uuid: ^2.2.2
   flutter_rating_bar: ^3.2.0+1
   location: ^3.1.0
-  firebase_storage: ^5.2.0
+  firebase_storage: ^7.0.0
   animated_splash_screen: ^1.0.1+2
+  dash_chat: ^1.1.15
+  flutter_datetime_picker: ^1.4.0
   timelines: ^0.0.2+1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
+
+  # for share button
+  share: ^0.5.3
+
+  # for search bar
+  flappy_search_bar: ^1.7.2
+
+  # for SQLite
+  sqflite: ^1.3.2+2
+  path: ^1.7.0
+
+  # for Dynamic Link
+  firebase_dynamic_links: ^0.7.0+1
 
 dev_dependencies:
   flutter_test:
