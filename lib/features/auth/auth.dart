@@ -6,27 +6,27 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/src/services/message_codecs.dart';
 
 class auth extends StatelessWidget {
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   Future<UserCredential> signInWithGoogle() async {
 // Trigger the authentication flow
-  print('debug');
-    final GoogleSignInAccount googleUser = await GoogleSignIn(
-      scopes: ['email', 'profile'], hostedDomain: '', clientId: '',
-    ).signIn();
-    print('debug2');
+    GoogleSignInAccount googleUser = _googleSignIn.currentUser;
+    if (googleUser == null) googleUser = await _googleSignIn.signInSilently();
+    if (googleUser == null) googleUser = await _googleSignIn.signIn();
+    if (googleUser == null) print('Error while signing in');
 
 // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
 
 // Create a new credential
-    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
+      final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
 // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -89,19 +89,15 @@ class auth extends StatelessWidget {
                         onPressed: () {
                           try {
                             final userCredential = signInWithGoogle();
-                          }
-/*
-                          on PlatformException catch (e) {
-                            print('pfexc');
-                          }
-*/
-                           on FirebaseAuthException catch (e) {
+                            Navigator.pushNamed(context, '/loggedIn');
+                          } on FirebaseAuthException catch (e) {
                             print('FirebaseAuthException');
                             print('${e.code}');
-                            Navigator.pushNamed(context, '/chat');
+//                            Navigator.pushNamed(context, '/loggedIn');
                           } on Exception catch (e) {
                             print('Other Exception');
                             print('${e.toString()}');
+//                            Navigator.pushNamed(context, '/loggedIn');
                           }
                         }),
                   ),
@@ -110,3 +106,39 @@ class auth extends StatelessWidget {
         ));
   }
 }
+
+  /*
+  static final googleLogin = GoogleSignIn(scopes: [
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ]);
+
+  void logIn() async {
+    GoogleSignInAccount signinAccount = await googleLogin.signInSilently();
+    if (signinAccount == null) signinAccount = await googleLogin.signIn();
+    if (signinAccount == null) return;
+
+    GoogleSignInAuthentication auth = await signinAccount.authentication;
+    final credential = GoogleAuthProvider.getCredential(
+      idToken: auth.idToken,
+      accessToken: auth.accessToken,
+    );
+    FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Authentication'),
+      ),
+      body: Center(
+        child: FlatButton(
+          onPressed: logIn,
+          child: Text('login'),
+        ),
+      ),
+    );
+  }
+}
+*/
