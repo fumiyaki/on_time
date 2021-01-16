@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:timelines/timelines.dart';
 
+import "../../common/app_bar.dart";
+
 const kTileHeight = 64.0;
 
 class _OrderInfo {
@@ -75,17 +77,92 @@ _OrderInfo _data(int id) => _OrderInfo(
 
 class detailPage extends StatelessWidget {
   final data = _data(1);
+  GlobalKey<ScaffoldState> _key;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('ここの部分は他のところからいただきます'),
-        ),
-        body: _DeliveryProcesses(
-            processes: data.deliveryProcesses,
-            doing: data.complete,
-            startingdate: data.startdate,
-            nowtime: data.date));
+        appBar: MyAppBar(_key),
+        body: Scaffold(
+            appBar: AppBar(
+                backgroundColor: Colors.white,
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                        icon: Icon(Icons.brush_sharp),
+                        //   onPressed: () => _key.currentState.openDrawer(),
+                        color: Colors.grey[800]),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 2),
+                      child: Column(
+                        children: [
+                          Text("Firebaseハッカソン",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              )),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 2, 2),
+                                child: Text("-",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                                child: Text("32",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+                                child: Text("h",
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.blue,
+                                    )),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+                                child: Text("21",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+                                child: Text("m",
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.blue,
+                                    )),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                        icon: Icon(Icons.share),
+                        // onPressed: () => _key.currentState.openDrawer(),
+                        color: Colors.grey[800]),
+                  ],
+                )),
+            body: _DeliveryProcesses(
+                processes: data.deliveryProcesses,
+                doing: data.complete,
+                startingdate: data.startdate,
+                nowtime: data.date)));
   }
 }
 
