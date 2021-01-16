@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,7 +18,6 @@ import "../../common/event_card.dart";
 import "../../common/drawer.dart";
 import "../../common/auth_model.dart";
 
-
 /// ホーム画面（イベント一覧）
 class Home extends StatefulWidget {
   @override
@@ -24,33 +25,23 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool _loggedIn;
+  bool _loggedIn = false;
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  StreamController<bool> _controller = StreamController<bool>.broadcast();
 
   @override
   Widget build(BuildContext context) {
-    FirebaseAuth.instance
-        .authStateChanges()
-        .listen((User user) {
-      if (user == null) {
-        print('in');
-        _loggedIn = false;
-      } else {
-        print('out');
-        _loggedIn = true;
-      }
-    });
-
     double screenWidth = MediaQuery.of(context).size.width;
-    print('yahho');
-
     return new Scaffold(
         appBar: MyAppBar(_key),
-        body:
+        body: StreamBuilder(
+        stream: _controller.stream,
+        builder: (context, snapshot) {
 
             /// AppBarを最前面にするためにScaffoldを二重に
-            Scaffold(
-          body: SafeArea(
+            return Scaffold(
+          body:
+          SafeArea(
             child: EventCards(),
           ),
 
@@ -62,7 +53,9 @@ class _HomeState extends State<Home> {
                   child: FloatingActionButton.extended(
                       onPressed: () {
                         Navigator.pushNamed(context, '/auth').then((value) {
-                          setState((){print('back');});
+                          setState(() {
+                            print('back');
+                          });
                         });
                       },
                       label: Text('ログイン'))),
@@ -71,13 +64,56 @@ class _HomeState extends State<Home> {
 
           /// ドロワー
           drawerEdgeDragWidth: 0,
-          drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer(login: _loggedIn)),
+          drawer: SizedBox(
+              width: 0.8 * screenWidth, child: MyDrawer(login: _loggedIn)),
           key: _key,
-        ));
+        );}
+            ));
   }
 
-}
 
+/// Dynamic Link対応
+/// アプリインストール済みの場合の処理
+///　ログイン状態をみた上で飛ばす先の画面をauthかdetailか判定したい
+/// まだうまく行ってない
+  @override
+  void initState() {
+    super.initState();
+
+      FirebaseAuth.instance.authStateChanges().listen((User user) {
+      if (user == null) {
+        _loggedIn = false;
+      } else {
+        _loggedIn = true;
+      }
+    });
+      _controller.add(_loggedIn);
+//    _initDynamicLinks(_loggedIn);
+  }
+/*
+  void _initDynamicLinks(bool loggedIn) async {
+    FirebaseDynamicLinks.instance.onLink(
+        onSuccess: (PendingDynamicLinkData dynamicLink) async {
+          final Uri deepLink = dynamicLink?.link;
+          Map<String, String> map = deepLink.queryParameters;
+          if (deepLink != null) {
+            String eventId = Map.from(map)['id'];
+            String password = Map.from(map)['pass'];
+            QueryParameter queryParameter =
+            new QueryParameter(eventId: eventId, password: password);
+            if (!loggedIn) {
+              Navigator.pushNamed(context, '/auth', arguments: queryParameter);
+            } else {
+              Navigator.pushNamed(context, '/schedule', arguments: queryParameter);
+            }
+          }
+        }, onError: (OnLinkErrorException e) async {
+      print(e.message);
+    });
+  }
+*/
+
+}
 
 /// イベント一覧の部分
 class EventCards extends StatefulWidget {
@@ -157,57 +193,6 @@ class _EventCardsState extends State<EventCards> {
     );
   }
 
-/// Dynamic Link対応
-/// アプリインストール済みの場合の処理
-///　ログイン状態をみた上で飛ばす先の画面をauthかdetailか判定したい
-/// まだうまく行ってない
-/*
-  @override
-  void initState() {
-    super.initState();
-    _getLoggedIn();
-    _initDynamicLinks(_loggedIn);
-      print('in initState');
-  }
-
-  /// ログイン済みかどうか
-  void _getLoggedIn() {
-  FirebaseAuth.instance
-      .authStateChanges()
-      .listen((User user) {
-  if (user == null) {
-    print('yet');
-    _loggedIn = false;
-  } else {
-  print('done');
-    _loggedIn = true;
-  }
-  });
-//    return await FirebaseAuth.instance.onAuthStateChanged.hasData;
-  }
-
-  void _initDynamicLinks(bool loggedIn) async {
-    FirebaseDynamicLinks.instance.onLink(
-        onSuccess: (PendingDynamicLinkData dynamicLink) async {
-          final Uri deepLink = dynamicLink?.link;
-          Map<String, String> map = deepLink.queryParameters;
-          if (deepLink != null) {
-            String eventId = Map.from(map)['id'];
-            String password = Map.from(map)['pass'];
-            QueryParameter queryParameter =
-            new QueryParameter(eventId: eventId, password: password);
-            if (!loggedIn) {
-              Navigator.pushNamed(context, '/auth', arguments: queryParameter);
-            } else {
-              Navigator.pushNamed(context, '/schedule', arguments: queryParameter);
-            }
-          }
-        }, onError: (OnLinkErrorException e) async {
-      print(e.message);
-    });
-  }
-*/
-
   /// 検索処理
   Future<List<DocumentSnapshot>> search(String search) async {
     return events
@@ -223,4 +208,3 @@ class _EventCardsState extends State<EventCards> {
     return downloadURL;
   }
 }
-
