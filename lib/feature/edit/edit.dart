@@ -92,7 +92,7 @@ class _EditPageState extends State<EditPage> {
     Argument argument = ModalRoute.of(context).settings.arguments;
 
     /// temporary
-    Event event = new Event(eventTitle: 'タイトル', viewerURL: Uri.parse('url.for.viewer'), editorURL: Uri.parse('url.for.editor'));
+    Event event = new Event(eventTitle: 'タイトル', viewerURL: Uri.parse('https://appontime.page.link/H3Ed'), editorURL: Uri.parse('https://appontime.page.link/4R89'));
     argument = new Argument(event: event);
 
     return Scaffold(
