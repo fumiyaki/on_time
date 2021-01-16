@@ -1,8 +1,10 @@
-
 import 'dart:async';
 
+import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'common/auth_model.dart';
 import 'features/event_setup/widgets/event_setup.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'features/home/home.dart';
@@ -23,10 +25,16 @@ Future<void> main() async {
 /// This is the main application widget.
 class MyApp extends StatelessWidget {
   static const String _title = 'OnTime';
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return
+      /*
+      ChangeNotifierProvider(
+
+      create: (context) => AuthModel(),
+    child:
+      */
+      MaterialApp(
       title: _title,
       initialRoute: '/',
       routes: <String, WidgetBuilder> {
@@ -40,8 +48,10 @@ class MyApp extends StatelessWidget {
         '/chat': (context) => MyHomePage()
       }
     );
+//    );
   }
 }
+
 
 
 /// Dynamic Link対応

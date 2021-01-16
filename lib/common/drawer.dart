@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../entity/editable_event.dart';
 import '../entity/event.dart';
 import '../common/event_card.dart';
 import 'space_box.dart';
 
 class MyDrawer extends StatefulWidget {
+  bool login;
+  MyDrawer({this.login});
   @override
   _MyDrawerState createState() => _MyDrawerState();
 }
@@ -22,6 +25,8 @@ class _MyDrawerState extends State<MyDrawer> {
           SpaceBox.height(50),
 
           // ログイン済みかどうかを判断
+          CreateEventCard(widget.login),
+/*
           FutureBuilder(
               future: _getUserId(),
               builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -31,13 +36,22 @@ class _MyDrawerState extends State<MyDrawer> {
                 return CreateEventCard(true);
 //                return CreateEventCard(snapshot.hasData);
               }),
-
+*/
           SpaceBox.height(50),
           Text('共同編集中のイベント一覧',
               style: TextStyle(color: Colors.grey[900], fontSize: 16)),
 
           // 共同編集中のイベント一覧
-          EditableEvents()
+          EditableEvents(),
+          FlatButton.icon(
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+//                Navigator.pushNamed(context, '/auth');
+              Navigator.popUntil(context, ModalRoute.withName('/'));
+            },
+            icon: Icon(Icons.exit_to_app),
+            label: Text('Logout'),
+          )
         ]));
   }
 
@@ -73,12 +87,7 @@ class CreateEventCard extends StatelessWidget {
                       if (hasData) {
                         Navigator.pushNamed(context, '/setup');
                       } else {
-                        /*
-                  Navigator.pushNamed(
-                    context,
-                    AuthPage().routeName,
-                );
-                 */
+                        Navigator.pushNamed(context, '/auth');
                       }
                     }))));
   }
@@ -114,8 +123,7 @@ class _EditableEventsState extends State<EditableEvents> {
                             id: editableEvents[index].id,
                             eventTitle: editableEvents[index].title,
                             eventDate: editableEvents[index].date,
-                            eventDetails: ''
-                            ),
+                            eventDetails: ''),
                         displayAll: false);
                   },
                   shrinkWrap: true,

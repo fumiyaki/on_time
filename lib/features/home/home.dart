@@ -2,17 +2,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+
 import "../../entity/event.dart";
 import "../../entity/query_parameter.dart";
 import "../../common/app_bar.dart";
 import "../../common/event_card.dart";
 import "../../common/drawer.dart";
+import "../../common/auth_model.dart";
 
+
+/// ホーム画面（イベント一覧）
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -23,25 +28,30 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    /// ログイン状態を確認
+    /// 多分ここに時間がかかるのから，初回起動時に渡す引数がnullになってエラーが出ちゃう
     FirebaseAuth.instance
         .authStateChanges()
         .listen((User user) {
 //          setState(() {
       if (user == null) {
-        print('yet');
+        print('in');
         _loggedIn = false;
       } else {
-        print('done');
+        print('out');
         _loggedIn = true;
       }
 //        });
+      print(_loggedIn);
+      return new MyScaffold(login: _loggedIn);
     });
-    print(_loggedIn);
     return new MyScaffold(login: _loggedIn);
   }
 
   /// Dynamic Link対応
-  /// インストール済みの場合
+  /// アプリインストール済みの場合の処理
+  ///　ログイン状態をみた上で飛ばす先の画面をauthかdetailか判定したい
+  /// まだうまく行ってない
 /*
   @override
   void initState() {
@@ -90,6 +100,20 @@ class _HomeState extends State<Home> {
  */
 }
 
+/// ログイン判定にprovideを使った場合
+/// うまく行かないので今んとこ却下
+/*
+class Home extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final bool _loggedIn = context.watch<AuthModel>().loggedIn;
+    print(_loggedIn);
+    return MyScaffold(login: _loggedIn);
+  }
+}
+*/
+
+/// 画面。引数にログインしてるかどうかをとる
 class MyScaffold extends StatefulWidget {
   final login;
   MyScaffold({this.login});
@@ -109,22 +133,15 @@ class _MyScaffoldState extends State<MyScaffold> {
         appBar: MyAppBar(_key),
         body:
 
-            /// AppBarを最前面にするために二重に
+            /// AppBarを最前面にするためにScaffoldを二重に
             Scaffold(
           body: SafeArea(
             child: EventCards(),
           ),
+
+          /// 未ログイン時のみログインボタン表示
           floatingActionButton: widget.login
               ? Container(width: 0, height: 0)
-/*
-          /// チャットボタン表示
-          FloatingActionButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/chat');
-                  },
-                  child: new Icon(Icons.chat))
- */
-
               : Container(
                   width: 0.7 * screenWidth,
                   child: FloatingActionButton.extended(
@@ -134,15 +151,18 @@ class _MyScaffoldState extends State<MyScaffold> {
                       label: Text('ログイン'))),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
+
+          /// ドロワー
           drawerEdgeDragWidth: 0,
-          drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer()),
+          drawer: SizedBox(width: 0.8 * screenWidth, child: MyDrawer(login: widget.login)),
           key: _key,
         ));
   }
 
 }
 
-/// 一イベント分の表示
+
+/// イベント一覧の部分
 class EventCards extends StatefulWidget {
   @override
   _EventCardsState createState() => _EventCardsState();
@@ -153,7 +173,7 @@ class _EventCardsState extends State<EventCards> {
 
   @override
   Widget build(BuildContext context) {
-        /// Firestoreからイベントリストを取得
+    /// Firestoreからイベントリストを取得
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('events')
@@ -228,14 +248,14 @@ class _EventCardsState extends State<EventCards> {
 
          */
 
-  // 検索処理
+  /// 検索処理
   Future<List<DocumentSnapshot>> search(String search) async {
     return events
         .where((event) => event["event_title"].contains(search))
         .toList();
   }
 
-  // Cloud Storage URL取得
+  /// Cloud Storage URL取得
   Future<String> getURL(String documentID) async {
     final String downloadURL = await firebase_storage.FirebaseStorage.instance
         .ref('event_images/' + documentID + '.png')
