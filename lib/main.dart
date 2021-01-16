@@ -26,7 +26,8 @@ class MyApp extends StatelessWidget {
       title: _title,
       initialRoute: '/',
       routes: <String, WidgetBuilder> {
-        '/': (context) => Home(),
+        //'/': (context) => Home(),
+        '/': (context) => MyCustomForm(),
 /*
         '/auth': (context) => AuthPage(),
         '/schedule': (context) => SchedulePage(),

@@ -17,5 +17,5 @@ public final class BuildConfig {
   public static final String VERSION_NAME = "";
   // Fields from default config.
   public static final String LIBRARY_NAME = "flutter-fire-analytics";
-  public static final String LIBRARY_VERSION = "6.3.0";
+  public static final String LIBRARY_VERSION = "7.0.1";
 }
