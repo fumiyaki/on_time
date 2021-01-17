@@ -34,7 +34,7 @@ class _DeliveryProcess {
   final List<_DeliveryMessage> messages;
 }
 
-//こ要素
+//子要素
 class _DeliveryMessage {
   const _DeliveryMessage(this.contenttime, this.message);
 

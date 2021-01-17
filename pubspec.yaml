@@ -60,6 +60,7 @@ dependencies:
   provider: ^4.0.4
   datetime_picker_formfield: ^1.0.0
   flutter_time_picker_spinner: ^1.0.6
+  drag_and_drop_lists: ^0.2.10
 
   # for share button
   share: ^0.5.3
