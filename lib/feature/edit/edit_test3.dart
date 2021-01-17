@@ -10,6 +10,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import '../../common/app_bar.dart';
+import '../../common/drawer.dart';
+import '../../entity/argument.dart';
+import '../../entity/event.dart';
+
 class DragIntoListExample extends StatefulWidget {
   DragIntoListExample({Key key, this.title}) : super(key: key);
   final String title;
@@ -20,15 +25,23 @@ class DragIntoListExample extends StatefulWidget {
 
 class _DragIntoListExample extends State<DragIntoListExample> {
   List<DragAndDropList> _contents = List<DragAndDropList>();
+  GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   final EventList = TextEditingController();
   final EventTask = TextEditingController();
   String SessionTime = '1';
   String ItemTime ='1';
+  Argument argument;
 
     @override
     Widget build(BuildContext context) {
+      Argument argument = ModalRoute.of(context).settings.arguments;
+
+      /// temporary
+      Event event = new Event(eventTitle: 'タイトル', viewerURL: Uri.parse('https://appontime.page.link/H3Ed'), editorURL: Uri.parse('https://appontime.page.link/4R89'));
+      argument = new Argument(event: event);
       var backgroundColor = Color.fromARGB(255, 243, 242, 248);
+      double screenWidth = MediaQuery.of(context).size.width;
 
       CollectionReference addcontents = FirebaseFirestore.instance.collection(
           'timetable');
@@ -57,11 +70,139 @@ class _DragIntoListExample extends State<DragIntoListExample> {
       }
 
       return Scaffold(
-        appBar: AppBar(
-          title: Text('Drag Into List'),
-        ),
+        appBar: MyAppBar(_key),
+        body: Scaffold(
         body: Column(
           children: <Widget>[
+            Container(
+              child: SingleChildScrollView(
+                  padding: EdgeInsets.all(25.0),
+                  child:Column(
+                      children: <Widget>[
+                        Container(
+                          child: Row(
+                              children:<Widget>[
+                                Center(
+                                  child:
+                                  new Text(argument.event.eventTitle,
+                                    style: new TextStyle(fontSize:30.0,
+                                        color: const Color(0xFF000000),
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: "Roboto"),
+                                  ),
+                                ),
+                              ]
+                          ),
+                        ),
+                        Container(padding: EdgeInsets.only(top:20,bottom:0),
+                          child: Row(
+                              children:<Widget>[
+                                //SpaceBox.width(30),
+                                Center(
+                                  child:
+                                  new Text(
+                                    "一般公開用URL",
+                                    style: new TextStyle(fontSize:18.0,
+                                        color: const Color(0xFF000000),
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: "Roboto"),
+                                  ),
+                                ),
+                              ]
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(top:5),
+                          child: Row(
+                              children:<Widget>[
+                                //SpaceBox.width(30),
+                                Column(
+                                    children:<Widget>[
+                                      Text(argument.event.viewerURL.toString(),
+                                        style: new TextStyle(fontSize:18.0,
+                                            color: const Color(0xFF000000),
+                                            fontWeight: FontWeight.w200,
+                                            decoration: TextDecoration.underline,
+                                            decorationColor: Colors.black,
+                                            fontFamily: "Roboto"),
+                                        textAlign: TextAlign.right,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ]
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.copy),
+                                  iconSize: 20,
+                                  onPressed: () {},
+                                ),
+                              ]
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(top:20,bottom:0),
+                          child:Row(
+                              children:<Widget>[
+                                //SpaceBox.width(30),
+                                new Text(
+                                  "共同編集用URL",
+                                  style: new TextStyle(fontSize:18.0,
+                                      color: const Color(0xFF000000),
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: "Roboto"),
+                                ),
+                                new Text(
+                                  "(ontimeチャットで共有禁止)",
+                                  style: new TextStyle(fontSize:14.0,
+                                      color: const Color(0xFF000000),
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Roboto"),
+                                ),
+                              ]
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(top:5),
+                          child: Row(
+                              children:<Widget>[
+                                //SpaceBox.width(30),
+                                Column(
+                                    children:<Widget>[
+                                      Text(argument.event.editorURL.toString(),
+                                        style: new TextStyle(fontSize:18.0,
+                                            color: const Color(0xFF000000),
+                                            decoration: TextDecoration.underline,
+                                            decorationColor: Colors.black,
+                                            fontWeight: FontWeight.w200,
+                                            fontFamily: "Roboto"),
+                                        textAlign: TextAlign.right,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ]
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.copy),
+                                  iconSize: 20,
+                                  onPressed: () {},
+                                ),
+                              ]
+                          ),
+                        ),
+//                  DragIntoListExample()
+                        /*
+                  Container(
+                    padding: EdgeInsets.only(top:5),
+                    child: _DeliveryProcesses(
+                    processes: data.deliveryProcesses,
+                        doing: data.complete,
+                        startingdate: data.startdate,
+                        nowtime: data.date),
+
+                  ),
+                   */
+                      ]
+                  )
+              ),
+            ),
             Flexible(
               flex: 10,
               child: DragAndDropLists(
@@ -212,16 +353,25 @@ class _DragIntoListExample extends State<DragIntoListExample> {
                 ],
               ),
             ),
+
           ],
         ),
         floatingActionButton: Container(
           margin:EdgeInsets.only(bottom: 55.0),
           child: FloatingActionButton(
-            onPressed: (){addContents();},
+            onPressed: (){
+              addContents();
+              Navigator.pop(context);
+              },
             child: Icon(Icons.save, color: Colors.white,),
           backgroundColor: Colors.blue,
           )),
-      );
+          /// ドロワー
+          drawerEdgeDragWidth: 0,
+          drawer: SizedBox(
+              width: 0.8 * screenWidth, child: MyDrawer(login: true)),
+          key: _key,
+      ));
     }
 
     _onItemReorder(int oldItemIndex, int oldListIndex, int newItemIndex,

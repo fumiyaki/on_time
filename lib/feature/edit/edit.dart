@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:timelines/timelines.dart';
+import 'edit_test3.dart';
 import '../../common/app_bar.dart';
 import '../../common/drawer.dart';
 import '../../entity/argument.dart';
@@ -211,6 +212,8 @@ class _EditPageState extends State<EditPage> {
                         ]
                     ),
                   ),
+//                  DragIntoListExample()
+                  /*
                   Container(
                     padding: EdgeInsets.only(top:5),
                     child: _DeliveryProcesses(
@@ -220,10 +223,13 @@ class _EditPageState extends State<EditPage> {
                         nowtime: data.date),
 
                   ),
+                   */
                 ]
             )
           ),
         ),
+
+
           /// ドロワー
           drawerEdgeDragWidth: 0,
           drawer: SizedBox(
