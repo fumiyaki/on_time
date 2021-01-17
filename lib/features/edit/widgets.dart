@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:provider/provider.dart';
-import 'package:ontime/feature/edit/bloc.dart';
+import 'package:ontime/features/edit/bloc.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 
 class BasicDateField extends StatelessWidget {
