@@ -69,7 +69,7 @@ class _DragIntoListExample extends State<DragIntoListExample> {
                 onItemReorder: _onItemReorder,
                 onListReorder: _onListReorder,
                 onItemAdd: _onItemAdd,
-                onListAdd: _onListAdd
+                onListAdd: _onListAdd,
                 listGhost: Container(
                   height: 50,
                   width: 100,
