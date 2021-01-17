@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ontime/feature/home/home.dart';
+import 'package:ontime/features/home/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 /*void main() {

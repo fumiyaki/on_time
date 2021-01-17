@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
-import 'package:ontime/feature/edit/edit.dart';
+import 'package:ontime/features/edit/edit.dart';
 
 class SearchBarDemoApp extends StatelessWidget {
   @override
