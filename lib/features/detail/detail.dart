@@ -41,7 +41,7 @@ class _DeliveryMessage {
 
 _OrderInfo _data(int id) => _OrderInfo(
       date: DateTime.now(),
-      startdate: DateTime(2020, 7, 25, 0, 30),
+      startdate: DateTime(2021, 1, 17, 10, 30),
       complete: 0,
       deliveryProcesses: [
         //あえて1足しておく
@@ -75,13 +75,110 @@ _OrderInfo _data(int id) => _OrderInfo(
       ],
     );
 
-class detailPage extends StatelessWidget {
+var alldelaytime;
+
+class detailPage extends StatefulWidget {
   final data = _data(1);
   GlobalKey<ScaffoldState> _key;
   @override
+  _detailPageState createState() => _detailPageState();
+}
+
+class _detailPageState extends State<detailPage> {
+  @override
   Widget build(BuildContext context) {
+    print("LLKK");
+    var kigo;
+    var kigo_h;
+    var kigo_m;
+    print(alldelaytime);
+    if (alldelaytime == null) {
+      setState(() {
+        kigo = Text("",
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ));
+        kigo_h = Text("0",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ));
+        kigo_m = Text("0",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ));
+      });
+    } else if (alldelaytime.inHours == 0 && alldelaytime.inMinutes == 0) {
+      setState(() {
+        kigo = Text("",
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.blue,
+              fontWeight: FontWeight.bold,
+            ));
+        kigo_h = Text("0",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.blue,
+              fontWeight: FontWeight.bold,
+            ));
+        kigo_m = Text("0",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.blue,
+              fontWeight: FontWeight.bold,
+            ));
+      });
+    } else if (alldelaytime.inMinutes > 0) {
+      setState(() {
+        kigo = Text("+",
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.red,
+              fontWeight: FontWeight.bold,
+            ));
+        kigo_h = Text(alldelaytime.inHours.toString(),
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.blue,
+              fontWeight: FontWeight.bold,
+            ));
+        kigo_m = Text(alldelaytime.inMinutes.toString(),
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.blue,
+              fontWeight: FontWeight.bold,
+            ));
+      });
+    } else {
+      setState(() {
+        kigo = Text("-",
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.blue,
+              fontWeight: FontWeight.bold,
+            ));
+        kigo_h = Text(alldelaytime.inHours.toString(),
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.blue,
+              fontWeight: FontWeight.bold,
+            ));
+        kigo_m = Text(alldelaytime.inMinutes.toString(),
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.blue,
+              fontWeight: FontWeight.bold,
+            ));
+      });
+    }
     return Scaffold(
-        appBar: MyAppBar(_key),
+        appBar: MyAppBar(widget._key),
         body: Scaffold(
             appBar: AppBar(
                 backgroundColor: Colors.white,
@@ -106,21 +203,11 @@ class detailPage extends StatelessWidget {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(0, 0, 2, 2),
-                                child: Text("-",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                    )),
+                                child: kigo,
                               ),
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                                child: Text("32",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                    )),
+                                child: kigo_h,
                               ),
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
@@ -132,12 +219,7 @@ class detailPage extends StatelessWidget {
                               ),
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-                                child: Text("21",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                    )),
+                                child: kigo_m,
                               ),
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
@@ -159,10 +241,10 @@ class detailPage extends StatelessWidget {
                   ],
                 )),
             body: _DeliveryProcesses(
-                processes: data.deliveryProcesses,
-                doing: data.complete,
-                startingdate: data.startdate,
-                nowtime: data.date)));
+                processes: widget.data.deliveryProcesses,
+                doing: widget.data.complete,
+                startingdate: widget.data.startdate,
+                nowtime: widget.data.date)));
   }
 }
 
@@ -194,8 +276,8 @@ class __InnerTimelineState extends State<_InnerTimeline> {
   Widget build(BuildContext context) {
     int sumtime = 0;
     var timenowdate = widget.timesnowdate;
-    print(timenowdate);
     var nowindexlist = widget.nowindexlist;
+    var startingdate = widget.startingdate;
     bool isEdgeIndex(int index) {
       return index == 0 || index == widget.messages.length + 1;
     }
@@ -234,7 +316,7 @@ class __InnerTimelineState extends State<_InnerTimeline> {
                               nowindexlist[widget.nowindex][i] = true;
                             }
                             //  print(timenowdate[widget.nowindex].length);
-                            print(index);
+                            //  print(index);
                             if (timenowdate[widget.nowindex].length ==
                                 index - 1) {
                               timenowdate[widget.nowindex].add(DateTime.now());
@@ -263,7 +345,7 @@ class __InnerTimelineState extends State<_InnerTimeline> {
                             timenowdate[widget.nowindex]
                                 .removeRange(index - 1, index);
                           }
-                          print(timenowdate);
+                          //  print(timenowdate);
                         });
                       },
                     ),
@@ -282,34 +364,58 @@ class __InnerTimelineState extends State<_InnerTimeline> {
           endConnectorBuilder: (_, index) => Connector.solidLine(),
           contentsBuilder: (_, index) {
             String pushtime;
+            var bordernow;
             if (isEdgeIndex(index)) {
               return null;
             }
-
             if (index > 1) {
               sumtime = sumtime + widget.messages[index - 2].contenttime;
             }
+            print(timenowdate[widget.nowindex].length);
+            print(index);
+            // if (timenowdate[widget.nowindex].length <= 0) {
+            // } else if (alldelaytime[widget.nowindex].length == index - 2) {
+            //   startingdate = startingdate.add(Duration(minutes: 1));
+            // }
+            ;
             var styletext;
-            print(sumtime);
+            print(alldelaytime);
             if (timenowdate[widget.nowindex].length == 0) {
               pushtime = DateFormat('HH:mm')
-                  .format(widget.startingdate.add(Duration(minutes: sumtime)));
+                  .format(startingdate.add(Duration(minutes: sumtime)));
               styletext = TextStyle(fontSize: 16, color: Color(0xff9b9b9b));
             } else if (timenowdate[widget.nowindex].length == index - 1) {
               pushtime = DateFormat('HH:mm')
                   .format(timenowdate[widget.nowindex][index - 2]);
               if (int.parse(DateFormat('HHmm')
                           .format(timenowdate[widget.nowindex][index - 2])) -
-                      int.parse(DateFormat('HHmm').format(widget.startingdate
-                          .add(Duration(minutes: sumtime)))) <
+                      int.parse(DateFormat('HHmm').format(
+                          startingdate.add(Duration(minutes: sumtime)))) >
                   0) {
+                alldelaytime = timenowdate[widget.nowindex][index - 2]
+                    .difference(startingdate.add(Duration(minutes: sumtime)));
+                //   print(alldelaytime);
                 styletext = TextStyle(fontSize: 16, color: Colors.red);
+                bordernow = BoxDecoration(
+                  border: Border.all(
+                      color: Color.fromRGBO(109, 113, 249, 1), width: 4.0),
+                  borderRadius: BorderRadius.circular(8),
+                );
               } else {
+                alldelaytime = timenowdate[widget.nowindex][index - 2]
+                    .difference(startingdate.add(Duration(minutes: sumtime)));
+                //  print(alldelaytime);
                 styletext = TextStyle(fontSize: 16, color: Colors.blue);
+                bordernow = BoxDecoration(
+                  border: Border.all(
+                      color: Color.fromRGBO(109, 113, 249, 1), width: 4.0),
+                  borderRadius: BorderRadius.circular(8),
+                );
               }
             } else {
               pushtime = DateFormat('HH:mm')
-                  .format(widget.startingdate.add(Duration(minutes: sumtime)));
+                  .format(startingdate.add(Duration(minutes: sumtime)));
+              // print(pushtime);
               styletext = TextStyle(fontSize: 16, color: Color(0xff9b9b9b));
             }
             return Padding(
@@ -317,14 +423,20 @@ class __InnerTimelineState extends State<_InnerTimeline> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
-                        child: Text(pushtime, style: styletext),
+                  Container(
+                    decoration: bordernow,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 4, 8, 4),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
+                            child: Text(pushtime, style: styletext),
+                          ),
+                          Text(widget.messages[index - 1].message),
+                        ],
                       ),
-                      Text(widget.messages[index - 1].message),
-                    ],
+                    ),
                   ),
                   Row(
                     children: [

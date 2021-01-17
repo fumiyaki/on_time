@@ -1,20 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:flutter/material.dart';
-import 'package:flutter_search_bar/flutter_search_bar.dart';
-import 'package:ontime/features/detail/detail.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
-import 'package:ontime/features/detail/detail.dart';
+
+import "../../common/app_bar.dart";
+import "../../common/drawer.dart";
+import "../../common/event_card.dart";
 import "../../entity/event.dart";
 import "../../entity/query_parameter.dart";
-import "../../common/app_bar.dart";
-import "../../common/event_card.dart";
-import "../../common/drawer.dart";
 
 class Home extends StatefulWidget {
   @override
@@ -38,21 +36,20 @@ class _HomeState extends State<Home> {
   void _initDynamicLinks(String userId) async {
     FirebaseDynamicLinks.instance.onLink(
         onSuccess: (PendingDynamicLinkData dynamicLink) async {
-          final Uri deepLink = dynamicLink?.link;
-          Map<String, String> map = deepLink.queryParameters;
-          if (deepLink != null) {
-            String eventId = Map.from(map)['id'];
-            String password = Map.from(map)['pass'];
-            QueryParameter queryParameter = new QueryParameter(
-                eventId: eventId, password: password);
-            if (userId == null) {
-              Navigator.pushNamed(context, '/auth', arguments: queryParameter);
-            } else {
-              Navigator.pushNamed(
-                  context, '/schedule', arguments: queryParameter);
-            }
-          }
-        }, onError: (OnLinkErrorException e) async {
+      final Uri deepLink = dynamicLink?.link;
+      Map<String, String> map = deepLink.queryParameters;
+      if (deepLink != null) {
+        String eventId = Map.from(map)['id'];
+        String password = Map.from(map)['pass'];
+        QueryParameter queryParameter =
+            new QueryParameter(eventId: eventId, password: password);
+        if (userId == null) {
+          Navigator.pushNamed(context, '/auth', arguments: queryParameter);
+        } else {
+          Navigator.pushNamed(context, '/schedule', arguments: queryParameter);
+        }
+      }
+    }, onError: (OnLinkErrorException e) async {
       print(e.message);
     });
   }
@@ -99,7 +96,7 @@ class MyScaffold extends StatefulWidget {
 
 class _MyScaffoldState extends State<MyScaffold> {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-    @override
+  @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return new Scaffold(
@@ -109,8 +106,7 @@ class _MyScaffoldState extends State<MyScaffold> {
             child: EventCards(),
           ),
           floatingActionButton: widget.hasData
-              ?
-          Container()
+              ? Container()
 /*
           FloatingActionButton(
                   onPressed: () {
@@ -188,7 +184,8 @@ class _EventCardsState extends State<EventCards> {
 
                   // 検索窓
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 30),
                     child: SearchBar<DocumentSnapshot>(
                       onSearch: search,
                       suggestions: events,
@@ -212,7 +209,8 @@ class _EventCardsState extends State<EventCards> {
                             id: events[index].reference.id,
                             eventTitle: events[index].data()['event_title'],
                             eventDate: events[index].data()['event_date'],
-                            eventDetails: events[index].data()['event_details']);
+                            eventDetails:
+                                events[index].data()['event_details']);
 
                         return EventCard(event: event, displayAll: true);
 /*
