@@ -13,8 +13,7 @@ import 'features/auth/auth.dart';
 import 'features/login.dart';
 import 'features/login_success.dart';
 import 'features/chat/chat.dart';
-import 'feature/edit/edit.dart';
-import 'feature/edit/edit_test3.dart';
+import 'features/edit/edit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +37,6 @@ class MyApp extends StatelessWidget {
         '/loggedIn': (context) => SomeScreen(),
         '/detail': (context) => detailPage(),
         '/setup': (context) => MyCustomForm(),
-//        '/chat': (context) => MyHomePage(),
         '/chat': (context) => ChatScreen(),
         '/edit': (context) => DragIntoListExample()
       },
