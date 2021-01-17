@@ -4,10 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/src/services/message_codecs.dart';
+import '../../entity/argument.dart';
 
 class auth extends StatelessWidget {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  Future<UserCredential> signInWithGoogle() async {
+  Future<User> signInWithGoogle() async {
 // Trigger the authentication flow
     GoogleSignInAccount googleUser = _googleSignIn.currentUser;
     if (googleUser == null) googleUser = await _googleSignIn.signInSilently();
@@ -25,7 +26,7 @@ class auth extends StatelessWidget {
       );
 
 // Once signed in, return the UserCredential
-      return await FirebaseAuth.instance.signInWithCredential(credential);
+      return (await FirebaseAuth.instance.signInWithCredential(credential)).user;
     }
 
   @override
@@ -89,9 +90,13 @@ class auth extends StatelessWidget {
                         ),
                         onPressed: () {
                           try {
-                            final userCredential = signInWithGoogle();
-
-                            Navigator.pushNamed(context, '/detail');
+                            final user = signInWithGoogle();
+                            Argument argument = ModalRoute.of(context).settings.arguments;
+                            if (argument.nextPage == '/') {
+                              Navigator.popUntil(context, ModalRoute.withName('/'));
+                            } else {
+                              Navigator.pushNamed(context, argument.nextPage, arguments: argument);
+                            }
                           } on FirebaseAuthException catch (e) {
                             print('FirebaseAuthException');
                             print('${e.code}');

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:ontime/feature/edit/widgets.dart';
+import 'package:ontime/features/edit/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:ontime/feature/edit/bloc.dart';
+import 'package:ontime/features/edit/bloc.dart';
 
 class DatetimePage extends StatelessWidget {
   DatetimePage({Key key}) : super(key: key);

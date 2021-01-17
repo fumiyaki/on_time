@@ -96,10 +96,11 @@ class CreateEventCard extends StatelessWidget {
                 trailing: IconButton(
                     icon: Icon(Icons.create_rounded, color: Colors.indigo[300]),
                     onPressed: () {
+                      Argument argument = new Argument(nextPage: '/setup');
                       if (hasData) {
-                        Navigator.pushNamed(context, '/setup');//, arguments: argument);
+                        Navigator.pushNamed(context, '/setup', arguments: argument);
                       } else {
-                        Navigator.pushNamed(context, '/auth');
+                        Navigator.pushNamed(context, '/auth', arguments: argument);
                       }
                     }))));
   }

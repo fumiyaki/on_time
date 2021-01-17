@@ -5,5 +5,6 @@ import 'event.dart';
 class Argument {
   MyUser user;
   Event event;
-  Argument({this.user, this.event});
+  String nextPage;
+  Argument({this.user, this.event, this.nextPage});
 }

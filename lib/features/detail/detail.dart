@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:timelines/timelines.dart';
 import "../../common/drawer.dart";
 import "../../common/app_bar.dart";
+import "../../entity/argument.dart";
 
 class _OrderInfo {
   const _OrderInfo({
@@ -92,7 +93,18 @@ class detailPage extends StatelessWidget {
                 children: [
                   IconButton(
                       icon: Icon(Icons.brush_sharp),
-                      onPressed: () => Navigator.pushNamed(context, '/edit'),//, arguments: argument),
+                      onPressed: () {
+                        bool _loggedIn;
+                        if (_loggedIn) {
+                          Argument argument = new Argument();
+                          Navigator.pushNamed(
+                              context, '/edit', arguments: argument);
+                        } else {
+                          Argument argument = new Argument(nextPage: '/edit');
+                          Navigator.pushNamed(
+                              context, '/auth', arguments: argument);
+                        }
+                      },
                         color: Colors.grey[800]),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 8, 0, 2),
@@ -164,7 +176,14 @@ class detailPage extends StatelessWidget {
                 processes: data.deliveryProcesses,
                 doing: data.complete,
                 startingdate: data.startdate,
-                nowtime: data.date)));
+                nowtime: data.date),
+
+          /// ドロワー
+          drawerEdgeDragWidth: 0,
+          drawer: SizedBox(
+              width: 0.8 * screenWidth,
+              child: MyDrawer(login: _loggedIn)),
+          key: _key,));
   }
 }
 
