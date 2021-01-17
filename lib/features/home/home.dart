@@ -12,6 +12,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import "../../entity/event.dart";
 import "../../entity/query_parameter.dart";
+import "../../entity/argument.dart";
 import "../../common/app_bar.dart";
 import "../../common/event_card.dart";
 import "../../common/drawer.dart";
@@ -49,7 +50,8 @@ class _HomeState extends State<Home> {
                         width: 0.7 * screenWidth,
                         child: FloatingActionButton.extended(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/auth')
+                              Argument argument = new Argument(nextPage: '/');
+                              Navigator.pushNamed(context, '/auth', arguments: argument)
                                   .then((value) {
                                 setState(() {
                                   print('back');
